@@ -1,0 +1,47 @@
+endpoints:
+  ABC123:
+    printer:
+      device: /dev/usb/lp1
+      dpi: 203
+      label:
+        width: 50
+        height: 30
+        gap: 2
+        offset: 0
+    args:
+      - product_name
+      - id
+      - expiration
+      - manufacturer
+    code:
+      - type: text
+        x: 0
+        y: 0
+        font: "4"
+        align: center
+        content: $product_name
+      - type: barcode
+        x: 0
+        y: 10
+        height: 7
+        codeType: "128"
+        humanReadable: center
+        align: center
+        content: $id
+      - type: text
+        x: 0
+        y: 20
+        font: "2"
+        align: left
+        content: $expiration
+      - type: text
+        x: 0
+        y: 25
+        font: "1"
+        align: "center"
+        content: $manufacturer
+    testData:
+      product_name: "Organic Chicken Breast"
+      id: "1234ABCD5678"
+      expiration: "DD = 2025.08.30"
+      manufacturer: "Chicken Co."
