@@ -1,14 +1,14 @@
 package main
 
 type PrinterLabel struct {
-	Width  int32 `yaml:"width"`
-	Height int32 `yaml:"height"`
-	Gap    int32 `yaml:"gap"`
-	Offset int32 `yaml:"offset"`
+	Width  int `yaml:"width"`
+	Height int `yaml:"height"`
+	Gap    int `yaml:"gap"`
+	Offset int `yaml:"offset"`
 }
 
 type Printer struct {
 	Device string       `yaml:"device"`
-	DPI    int32        `yaml:"dpi"`
+	DPI    int          `yaml:"dpi"`
 	Label  PrinterLabel `yaml:"label"`
 }

@@ -9,39 +9,34 @@ endpoints:
         gap: 2
         offset: 0
     args:
-      - product_name
-      - id
-      - expiration
-      - manufacturer
+      ProductName: product_name
+      Id: id
+      Expiration: expiration
+      Manufacturer: manufacturer
     code:
       - type: text
-        x: 0
-        y: 0
+        x: 8
+        y: 8
         font: "4"
         align: center
-        content: $product_name
+        content: "{{ .ProductName }}"
       - type: barcode
-        x: 0
-        y: 10
-        height: 7
+        x: 8
+        y: 48
+        height: 80
         codeType: "128"
         humanReadable: center
         align: center
-        content: $id
+        content: "{{ .Id }}"
       - type: text
-        x: 0
-        y: 20
+        x: 8
+        y: 136
         font: "2"
         align: left
-        content: $expiration
+        content: "DD = {{ .Expiration }}"
       - type: text
-        x: 0
-        y: 25
+        x: 8
+        y: 164
         font: "1"
         align: "center"
-        content: $manufacturer
-    testData:
-      product_name: "Organic Chicken Breast"
-      id: "1234ABCD5678"
-      expiration: "DD = 2025.08.30"
-      manufacturer: "Chicken Co."
+        content: "MFR {{ .Manufacturer }}"

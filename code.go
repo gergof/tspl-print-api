@@ -2,12 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/go-yaml/yaml"
-	"github.com/mrgloba/gotspl"
+	"github.com/mrgloba/gotspl/gotspl"
 )
 
 type Code interface {
-	ToCommand(args map[string]string) (error, gotspl.TSPLCommand)
+	ToCommand(args map[string]string) (gotspl.TSPLCommand, error)
 }
 
 type CodeBase struct {
@@ -30,13 +29,13 @@ func (w *CodeWrapper) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		if err := unmarshal(&text); err != nil {
 			return err
 		}
-		w.Code = text
+		w.Code = &text
 	case "barcode":
 		var barcode CodeBarcode
 		if err := unmarshal(&barcode); err != nil {
 			return err
 		}
-		w.Code = barcode
+		w.Code = &barcode
 	default:
 		return fmt.Errorf("unknown code type: %s", base.Type)
 	}

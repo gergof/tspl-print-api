@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/mrgloba/gotspl"
+	"github.com/mrgloba/gotspl/gotspl"
 )
 
 type HumanReadable string
@@ -15,19 +15,19 @@ const (
 
 type CodeBarcode struct {
 	CodeBase
-	X             int32         `yaml:"x"`
-	Y             int32         `yaml:"y"`
-	Height        int32         `yaml:"height"`
+	X             int           `yaml:"x"`
+	Y             int           `yaml:"y"`
+	Height        int           `yaml:"height"`
 	CodeType      string        `yaml:"codeType"`
 	HumanReadable HumanReadable `yaml:"humanReadable"`
-	Align         TextAlignt    `yaml:"align"`
+	Align         TextAlign     `yaml:"align"`
 	Content       string        `yaml:"content"`
 }
 
-func (c *CodeText) ToCommand(args map[string]string) (error, gotspl.TSPLCommand) {
-	err, renderedContent := fillTemplate(c.Content, args)
+func (c *CodeBarcode) ToCommand(args map[string]string) (gotspl.TSPLCommand, error) {
+	renderedContent, err := fillTemplate(c.Content, args)
 	if err != nil {
-		return err, nil
+		return nil, err
 	}
 
 	cmd := gotspl.BarcodeCmd()
@@ -43,7 +43,7 @@ func (c *CodeText) ToCommand(args map[string]string) (error, gotspl.TSPLCommand)
 			cmd.HumanReadable(1)
 		case HumanReadableCenter:
 			cmd.HumanReadable(2)
-		case HumanReadableLeft:
+		case HumanReadableRight:
 			cmd.HumanReadable(3)
 		default:
 			cmd.HumanReadable(0)
@@ -56,14 +56,14 @@ func (c *CodeText) ToCommand(args map[string]string) (error, gotspl.TSPLCommand)
 			cmd.Alignment(1)
 		case TextAlignCenter:
 			cmd.Alignment(2)
-		case TextAlignLeft:
+		case TextAlignRight:
 			cmd.Alignment(3)
 		default:
 			cmd.Alignment(0)
 		}
 	}
 
-	cmd.Content(renderedContent)
+	cmd.Content(renderedContent, true)
 
-	return nil, cmd
+	return cmd, nil
 }

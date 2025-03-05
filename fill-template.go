@@ -1,22 +1,21 @@
 package main
 
 import (
-	"fmt"
+	"bytes"
+	"text/template"
 )
 
-func fillTemplate(str string, args map[string]string) (err, string) {
-	if len(str) > 0 && str[0] == '$' {
-		// we need interpolation
-		key := str[1:]
-
-		val, ok := args[key]
-
-		if !ok {
-			return fmt.Errorf("Arguments map does not contain %v key", key), ""
-		}
-
-		return nil, val
+func fillTemplate(str string, args map[string]string) (string, error) {
+	templ, err := template.New("").Parse(str)
+	if err != nil {
+		return "", err
 	}
 
-	return str
+	var buf bytes.Buffer
+	err = templ.Execute(&buf, args)
+	if err != nil {
+		return "", err
+	}
+
+	return buf.String(), nil
 }

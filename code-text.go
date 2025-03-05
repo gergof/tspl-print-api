@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/mrgloba/gotspl"
+	"github.com/mrgloba/gotspl/gotspl"
 )
 
 type TextAlign string
@@ -15,20 +15,20 @@ const (
 
 type CodeText struct {
 	CodeBase
-	X       int32     `yaml:"x"`
-	Y       int32     `yaml:"y"`
+	X       int       `yaml:"x"`
+	Y       int       `yaml:"y"`
 	Font    string    `yaml:"font"`
 	Align   TextAlign `yaml:"align"`
 	Content string    `yaml:"content"`
 }
 
-func (c *CodeText) ToCommand(args map[string]string) (error, gotspl.TSPLCommand) {
-	err, renderedContent := fillTemplate(c.Content, args)
+func (c *CodeText) ToCommand(args map[string]string) (gotspl.TSPLCommand, error) {
+	renderedContent, err := fillTemplate(c.Content, args)
 	if err != nil {
-		return err, nil
+		return nil, err
 	}
 
-	cmd := gotspl.TextCmd()
+	cmd := gotspl.Text()
 
 	cmd.XCoordinate(c.X)
 	cmd.YCoordinate(c.Y)
@@ -50,7 +50,7 @@ func (c *CodeText) ToCommand(args map[string]string) (error, gotspl.TSPLCommand)
 		}
 	}
 
-	cmd.Content(renderedContent)
+	cmd.Content(renderedContent, true)
 
-	return nil, cmd
+	return cmd, nil
 }
