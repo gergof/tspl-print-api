@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/mrgloba/gotspl/gotspl"
+	"github.com/gergof/gotspl/gotspl"
 )
 
 type TextAlign string
@@ -30,27 +30,31 @@ func (c *CodeText) ToCommand(args map[string]string) (gotspl.TSPLCommand, error)
 
 	cmd := gotspl.Text()
 
-	cmd.XCoordinate(c.X)
-	cmd.YCoordinate(c.Y)
+	cmd = cmd.XCoordinate(c.X)
+	cmd = cmd.YCoordinate(c.Y)
+	cmd = cmd.Rotation(0)
+	cmd = cmd.XMultiplier(1)
+	cmd = cmd.YMultiplier(1)
+	cmd = cmd.FontName("1")
 
 	if c.Font != "" {
-		cmd.FontName(c.Font)
+		cmd = cmd.FontName(c.Font)
 	}
 
 	if c.Align != "" {
 		switch c.Align {
 		case TextAlignLeft:
-			cmd.Alignment(1)
+			cmd = cmd.Alignment(1)
 		case TextAlignCenter:
-			cmd.Alignment(2)
+			cmd = cmd.Alignment(2)
 		case TextAlignRight:
-			cmd.Alignment(3)
+			cmd = cmd.Alignment(3)
 		default:
-			cmd.Alignment(0)
+			cmd = cmd.Alignment(0)
 		}
 	}
 
-	cmd.Content(renderedContent, true)
+	cmd = cmd.Content(renderedContent, true)
 
 	return cmd, nil
 }

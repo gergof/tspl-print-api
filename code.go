@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/mrgloba/gotspl/gotspl"
+	"github.com/gergof/gotspl/gotspl"
 )
 
 type Code interface {

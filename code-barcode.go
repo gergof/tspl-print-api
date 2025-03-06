@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/mrgloba/gotspl/gotspl"
+	"github.com/gergof/gotspl/gotspl"
 )
 
 type HumanReadable string
@@ -32,38 +32,41 @@ func (c *CodeBarcode) ToCommand(args map[string]string) (gotspl.TSPLCommand, err
 
 	cmd := gotspl.BarcodeCmd()
 
-	cmd.XCoordinate(c.X)
-	cmd.YCoordinate(c.Y)
-	cmd.Height(c.Height)
-	cmd.CodeType(c.CodeType)
+	cmd = cmd.XCoordinate(c.X)
+	cmd = cmd.YCoordinate(c.Y)
+	cmd = cmd.Height(c.Height)
+	cmd = cmd.CodeType(c.CodeType)
+	cmd = cmd.Rotation(0)
+	cmd = cmd.Narrow(2)
+	cmd = cmd.Wide(2)
 
 	if c.HumanReadable != "" {
 		switch c.HumanReadable {
 		case HumanReadableLeft:
-			cmd.HumanReadable(1)
+			cmd = cmd.HumanReadable(1)
 		case HumanReadableCenter:
-			cmd.HumanReadable(2)
+			cmd = cmd.HumanReadable(2)
 		case HumanReadableRight:
-			cmd.HumanReadable(3)
+			cmd = cmd.HumanReadable(3)
 		default:
-			cmd.HumanReadable(0)
+			cmd = cmd.HumanReadable(0)
 		}
 	}
 
 	if c.Align != "" {
 		switch c.Align {
 		case TextAlignLeft:
-			cmd.Alignment(1)
+			cmd = cmd.Alignment(1)
 		case TextAlignCenter:
-			cmd.Alignment(2)
+			cmd = cmd.Alignment(2)
 		case TextAlignRight:
-			cmd.Alignment(3)
+			cmd = cmd.Alignment(3)
 		default:
-			cmd.Alignment(0)
+			cmd = cmd.Alignment(0)
 		}
 	}
 
-	cmd.Content(renderedContent, true)
+	cmd = cmd.Content(renderedContent, true)
 
 	return cmd, nil
 }
