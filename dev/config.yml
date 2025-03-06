@@ -1,8 +1,7 @@
 endpoints:
   ABC123:
     printer:
-      device: /dev/usb/lp1
-      dpi: 203
+      device: /dev/usb/lp0
       label:
         width: 50
         height: 30
