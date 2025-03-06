@@ -15,28 +15,28 @@ endpoints:
       Manufacturer: manufacturer
     code:
       - type: text
-        x: 8
-        y: 8
+        x: 20
+        y: 16
         font: "4"
         align: center
         content: "{{ .ProductName }}"
       - type: barcode
-        x: 8
-        y: 48
+        x: 20
+        y: 56
         height: 80
         codeType: "128"
         humanReadable: center
         align: center
         content: "{{ .Id }}"
       - type: text
-        x: 8
-        y: 136
+        x: 20
+        y: 174
         font: "2"
         align: left
         content: "DD = {{ .Expiration }}"
       - type: text
-        x: 8
-        y: 164
+        x: 20
+        y: 202
         font: "1"
         align: "center"
         content: "MFR {{ .Manufacturer }}"
