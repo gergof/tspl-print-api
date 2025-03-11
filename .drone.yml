@@ -1,0 +1,60 @@
+---
+kind: pipeline
+name: build-binary
+type: docker
+trigger:
+  event:
+    - tag
+steps:
+  - name: Build binaries
+    image: golang
+    commands:
+      - go get -v
+      - GOOS=linux GOARCH=amd64 go build -o tspl-print-api-linux-amd64
+      - GOOS=linux GOARCH=arm64 go build -o tspl-print-api-linux-arm64
+      - GOOS=darwin GOARCH=amd64 go build -o tspl-print-api-darwin-amd64
+      - GOOS=darwin GOARCH=arm64 go build -o tspl-print-api-darwin-arm64
+      - GOOS=windows GOARCH=amd64 go build -o tspl-print-api-windows-amd64.exe
+      - GOOS=windows GOARCH=386 go build -o tspl-print-api-windows-i386.exe
+  - name: Github release binaries
+    image: plugins/github-release
+    settings:
+      api_key:
+        from_secret: github_release_token
+      title: Release ${DRONE_TAG}
+      files:
+        - tspl-print-api-*
+---
+kind: pipeline
+name: build-docker
+type: docker
+trigger:
+  event:
+    - tag
+steps:
+  - name: Build
+    image: docker
+    volumes:
+      - name: dockersock
+        path: /var/run
+    environment:
+      DOCKER_USER:
+        from_secret: docker_user
+      DOCKER_PASSWORD:
+        from_secret: docker_password
+    commands:
+      - echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USER --password-stdin
+      - docker build -t gergof/tspl-print-api:$DRONE_TAG
+      - docker tag gergof/tspl-print-api:$DRONE_TAG gergof/tspl-print-api:latest
+      - docker push gergof/tspl-print-api:$DRONE_TAG
+      - docker push gergof/tspl-print-api:latest
+services:
+  - name: docker
+    image: docker:dind
+    privileged: true
+    volumes:
+      - name: dockersock
+        path: /var/run
+volumes:
+  - name: dockersock
+    temp: {}
