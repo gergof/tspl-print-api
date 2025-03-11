@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## 1.0.1 - 2025-03-11
+#### Build / CI
+- Fixed command for docker build - (75cc35d) - Fándly Gergő
+- Added post bump hooks to cocogitto - (eabdab9) - Fándly Gergő
+
+- - -
+
 ## 1.0.0 - 2025-03-11
 #### Build / CI
 - Added cocogitto configuration - (0334230) - Fándly Gergő
