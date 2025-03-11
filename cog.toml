@@ -1,0 +1,10 @@
+pre_bump_hooks = [
+	"git fetch --all --tags"
+]
+
+[commit_types]
+feat = { changelog_title = "Features", bump_minor = true }
+fix = { changelog_title = "Bug Fixes", bump_patch = true }
+imp = { changelog_title = "Improvements", bump_patch = true }
+ci = { changelog_title = "Build / CI", bump_patch = true }
+chore = { changelog_title = "Chores", omit_from_changelog = true }
