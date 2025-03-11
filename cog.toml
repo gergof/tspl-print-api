@@ -2,6 +2,11 @@ pre_bump_hooks = [
 	"git fetch --all --tags"
 ]
 
+post_bump_hooks = [
+	"git push",
+	"git push --tags"
+]
+
 [commit_types]
 feat = { changelog_title = "Features", bump_minor = true }
 fix = { changelog_title = "Bug Fixes", bump_patch = true }
