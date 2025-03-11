@@ -44,7 +44,7 @@ steps:
         from_secret: docker_password
     commands:
       - echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USER --password-stdin
-      - docker build -t gergof/tspl-print-api:$DRONE_TAG
+      - docker build -t gergof/tspl-print-api:$DRONE_TAG .
       - docker tag gergof/tspl-print-api:$DRONE_TAG gergof/tspl-print-api:latest
       - docker push gergof/tspl-print-api:$DRONE_TAG
       - docker push gergof/tspl-print-api:latest
