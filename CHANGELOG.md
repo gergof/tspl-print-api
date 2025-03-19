@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## 1.1.0 - 2025-03-19
+#### Features
+- Added BLOCK command - (1455297) - Fándly Gergő
+- Added commands for PDF417 and QR codes - (4d9d4d2) - Fándly Gergő
+
+- - -
+
 ## 1.0.1 - 2025-03-11
 #### Build / CI
 - Fixed command for docker build - (75cc35d) - Fándly Gergő
