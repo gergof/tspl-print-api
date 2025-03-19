@@ -126,3 +126,12 @@ endpoints:
   - `ecc` - ECC level to use for code (valid values: `L`, `M`, `Q`, `H`)
   - `cellWidth` - Width of a cell (valid values from 0 to 10)
   - `content` - The content to print (can use templating)
+- `block` - Print text wrapped in a box
+  - `x` - Horizontal starting coordinate (in dots)
+  - `y` - Vertical starting coordinate (in dots)
+  - `width` - The width of the text block
+  - `height` - The height of the text block
+  - `font` - Font to use
+  - `space` - Space between the lines (default to 0)
+  - `align` - Text alignment (valid values: `default`, `left`, `right`, `center`)
+  - `content` - The content to print (can use templating)

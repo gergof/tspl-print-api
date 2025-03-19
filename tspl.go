@@ -52,3 +52,7 @@ func TsplPdf417Command(x int, y int, width int, height int, rotate int, content 
 func TsplQrCodeCommand(x int, y int, ecc string, cellWidth int, rotation int, content string) string {
 	return fmt.Sprintf("QRCODE %d,%d,%s,%d,A,%d,\"%s\"", x, y, ecc, cellWidth, rotation, escapeContent(content))
 }
+
+func TsplBlockCommand(x int, y int, width int, height int, font string, rotation int, xmult int, ymult int, space int, align int, content string) string {
+	return fmt.Sprintf("BLOCK %d,%d,%d,%d,\"%s\",%d,%d,%d,%d,%d,\"%s\"", x, y, width, height, font, rotation, xmult, ymult, space, align, escapeContent(content))
+}

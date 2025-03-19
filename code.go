@@ -47,6 +47,12 @@ func (w *CodeWrapper) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			return err
 		}
 		w.Code = &qr
+	case "block":
+		var block CodeBlock
+		if err := unmarshal(&block); err != nil {
+			return err
+		}
+		w.Code = &block
 	default:
 		return fmt.Errorf("unknown code type: %s", base.Type)
 	}

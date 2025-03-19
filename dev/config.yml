@@ -2,7 +2,7 @@ endpoints:
   ABC123:
     printer:
       device: /dev/usb/lp4
-      direction: inverted
+      direction: normal
       label:
         width: 50
         height: 30
@@ -38,3 +38,33 @@ endpoints:
         font: "1"
         align: "center"
         content: "MFR {{ .Manufacturer }}"
+  grocy-label:
+    printer:
+      device: /dev/usb/lp4
+      direction: inverted
+      label:
+        width: 50
+        height: 30
+        gap: 2
+        offset: 0
+    args:
+      Product: product
+      Code: grocycode
+      DueDate: due_date
+    code:
+      - type: qr
+        x: 16
+        y: 16
+        ecc: L
+        cellWidth: 5
+        content: "{{ .Code }}"
+      - type: text
+        x: 160
+        y: 16
+        font: "3"
+        content: "{{ .Product }}"
+      - type: text
+        x: 160
+        y: 204
+        font: "2"
+        content: "Exp.: {{ slice .DueDate 4 }}"
