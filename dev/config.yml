@@ -1,7 +1,8 @@
 endpoints:
   ABC123:
     printer:
-      device: /dev/usb/lp0
+      device: /dev/usb/lp4
+      direction: inverted
       label:
         width: 50
         height: 30
@@ -14,18 +15,16 @@ endpoints:
       Manufacturer: manufacturer
     code:
       - type: text
-        x: 20
+        x: 200
         y: 16
         font: "4"
         align: center
         content: "{{ .ProductName }}"
-      - type: barcode
+      - type: qr
         x: 20
         y: 56
-        height: 80
-        codeType: "128"
-        humanReadable: center
-        align: center
+        ecc: L
+        cellWidth: 5
         content: "{{ .Id }}"
       - type: text
         x: 20
@@ -34,7 +33,7 @@ endpoints:
         align: left
         content: "DD = {{ .Expiration }}"
       - type: text
-        x: 20
+        x: 200
         y: 202
         font: "1"
         align: "center"

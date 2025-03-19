@@ -1,9 +1,5 @@
 package main
 
-import (
-	"github.com/gergof/gotspl/gotspl"
-)
-
 type HumanReadable string
 
 const (
@@ -24,49 +20,39 @@ type CodeBarcode struct {
 	Content       string        `yaml:"content"`
 }
 
-func (c *CodeBarcode) ToCommand(args map[string]string) (gotspl.TSPLCommand, error) {
+func (c *CodeBarcode) ToCommand(args map[string]string) (string, error) {
 	renderedContent, err := fillTemplate(c.Content, args)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	cmd := gotspl.BarcodeCmd()
-
-	cmd = cmd.XCoordinate(c.X)
-	cmd = cmd.YCoordinate(c.Y)
-	cmd = cmd.Height(c.Height)
-	cmd = cmd.CodeType(c.CodeType)
-	cmd = cmd.Rotation(0)
-	cmd = cmd.Narrow(2)
-	cmd = cmd.Wide(2)
-
+	humanReadable := 0
 	if c.HumanReadable != "" {
 		switch c.HumanReadable {
 		case HumanReadableLeft:
-			cmd = cmd.HumanReadable(1)
+			humanReadable = 1
 		case HumanReadableCenter:
-			cmd = cmd.HumanReadable(2)
+			humanReadable = 2
 		case HumanReadableRight:
-			cmd = cmd.HumanReadable(3)
+			humanReadable = 3
 		default:
-			cmd = cmd.HumanReadable(0)
+			humanReadable = 0
 		}
 	}
 
+	alignment := 0
 	if c.Align != "" {
 		switch c.Align {
 		case TextAlignLeft:
-			cmd = cmd.Alignment(1)
+			alignment = 1
 		case TextAlignCenter:
-			cmd = cmd.Alignment(2)
+			alignment = 2
 		case TextAlignRight:
-			cmd = cmd.Alignment(3)
+			alignment = 3
 		default:
-			cmd = cmd.Alignment(0)
+			alignment = 0
 		}
 	}
 
-	cmd = cmd.Content(renderedContent, true)
-
-	return cmd, nil
+	return TsplBarcodeCommand(c.X, c.Y, c.CodeType, c.Height, humanReadable, 0, 2, 2, alignment, renderedContent), nil
 }

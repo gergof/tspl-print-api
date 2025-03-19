@@ -1,9 +1,5 @@
 package main
 
-import (
-	"github.com/gergof/gotspl/gotspl"
-)
-
 type TextAlign string
 
 const (
@@ -22,39 +18,30 @@ type CodeText struct {
 	Content string    `yaml:"content"`
 }
 
-func (c *CodeText) ToCommand(args map[string]string) (gotspl.TSPLCommand, error) {
+func (c *CodeText) ToCommand(args map[string]string) (string, error) {
 	renderedContent, err := fillTemplate(c.Content, args)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	cmd := gotspl.Text()
-
-	cmd = cmd.XCoordinate(c.X)
-	cmd = cmd.YCoordinate(c.Y)
-	cmd = cmd.Rotation(0)
-	cmd = cmd.XMultiplier(1)
-	cmd = cmd.YMultiplier(1)
-	cmd = cmd.FontName("1")
-
+	font := "1"
 	if c.Font != "" {
-		cmd = cmd.FontName(c.Font)
+		font = c.Font
 	}
 
+	alignment := 0
 	if c.Align != "" {
 		switch c.Align {
 		case TextAlignLeft:
-			cmd = cmd.Alignment(1)
+			alignment = 1
 		case TextAlignCenter:
-			cmd = cmd.Alignment(2)
+			alignment = 2
 		case TextAlignRight:
-			cmd = cmd.Alignment(3)
+			alignment = 3
 		default:
-			cmd = cmd.Alignment(0)
+			alignment = 0
 		}
 	}
 
-	cmd = cmd.Content(renderedContent, true)
-
-	return cmd, nil
+	return TsplTextCommand(c.X, c.Y, font, 0, 1, 1, alignment, renderedContent), nil
 }

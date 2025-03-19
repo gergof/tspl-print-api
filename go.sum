@@ -1,5 +1,3 @@
-github.com/gergof/gotspl v1.0.0 h1:1Idhr5fvooMptokTXRu6ULHCMI+Dr+iU+K8zt8a0Bc4=
-github.com/gergof/gotspl v1.0.0/go.mod h1:WIvYyY7/ZjWtt1RT5GhgpQ8u1tdXmGXnAzVlly2kEco=
 github.com/go-chi/chi/v5 v5.2.1 h1:KOIHODQj58PmL80G2Eak4WdvUzjSJSm0vG72crDCqb8=
 github.com/go-chi/chi/v5 v5.2.1/go.mod h1:L2yAIGWB3H+phAw1NxKwWM+7eUH/lU8pOMm5hHcoops=
 github.com/go-yaml/yaml v2.1.0+incompatible h1:RYi2hDdss1u4YE7GwixGzWwVo47T8UQwnTLB6vQiq+o=

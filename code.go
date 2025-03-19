@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/gergof/gotspl/gotspl"
 )
 
 type Code interface {
-	ToCommand(args map[string]string) (gotspl.TSPLCommand, error)
+	ToCommand(args map[string]string) (string, error)
 }
 
 type CodeBase struct {
@@ -36,6 +35,18 @@ func (w *CodeWrapper) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			return err
 		}
 		w.Code = &barcode
+	case "pdf417":
+		var pdf417 CodePdf417
+		if err := unmarshal(&pdf417); err != nil {
+			return err
+		}
+		w.Code = &pdf417
+	case "qr":
+		var qr CodeQR
+		if err := unmarshal(&qr); err != nil {
+			return err
+		}
+		w.Code = &qr
 	default:
 		return fmt.Errorf("unknown code type: %s", base.Type)
 	}

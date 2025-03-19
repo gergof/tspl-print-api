@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gergof/gotspl/gotspl"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -24,8 +23,6 @@ func main() {
 	}
 
 	log.Print("Starting TSPL print API")
-
-	gotspl.TSPLInitialize(gotspl.MEASUREMENT_SYSTEM_METRIC)
 
 	log.Printf("Loading config file from %s", *configFilePath)
 

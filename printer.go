@@ -1,6 +1,8 @@
 package main
 
-import "os"
+import (
+	"os"
+)
 
 type PrinterLabel struct {
 	Width  int `yaml:"width"`
@@ -10,12 +12,13 @@ type PrinterLabel struct {
 }
 
 type Printer struct {
-	Device string       `yaml:"device"`
-	Label  PrinterLabel `yaml:"label"`
+	Device    string       `yaml:"device"`
+	Direction string       `yaml:"direction"`
+	Label     PrinterLabel `yaml:"label"`
 }
 
 func (p *Printer) SendCommand(command []byte) error {
-	file, err := os.OpenFile(p.Device, os.O_WRONLY, 0666)
+	file, err := os.OpenFile(p.Device, os.O_WRONLY|os.O_SYNC, 0666)
 	if err != nil {
 		return err
 	}
@@ -23,6 +26,11 @@ func (p *Printer) SendCommand(command []byte) error {
 	defer file.Close()
 
 	_, err = file.Write(command)
+	if err != nil {
+		return err
+	}
+
+	_, err = file.Write([]byte("\n\n"))
 
 	return err
 }

@@ -58,6 +58,7 @@ endpoints:
   ABC123: # the name of the endpoint. Think of this as an API key for public-facing apis
     printer:
       device: /dev/usb/lp0 # printer device
+      direction: normal # can be normal or inverted
       label:
         width: 50 # with of label in mm
         height: 30 # height of label in mm
@@ -97,4 +98,31 @@ endpoints:
         content: "MFR {{ .Manufacturer }}" # you can use templates with additional text
 ```
 
-Currently only TEXT and BARCODE TSPL commands are supported. Feel free to open an issue or a PR if you need support for anything else. I only needed these two.
+##### Supported Codes and arguments
+
+- `text` - Print text
+  - `x` - Horizontal starting coordinate (in dots)
+  - `y` - Vertical starting coordinate (in dots)
+  - `font` - Font to use
+  - `align` - Text alignment (valid values: `default`, `left`, `right`, `center`)
+  - `content` - The content to print (can use templating)
+- `barcode` - Print 1D barcodes
+  - `x` - Horizontal starting coordinate (in dots)
+  - `y` - Vertical starting coordinate (in dots)
+  - `height` - Height of barcode
+  - `codeType` - Type of barcode
+  - `humanReadable` - Position of human readable label (valid values: `none`, `left`, `center`, `right`)
+  - `align` - Alignment of barcode
+  - `content` - The content to print (can use templating)
+- `pdf417` - Print PDF-417 2D codes
+  - `x` - Horizontal starting coordinate (in dots)
+  - `y` - Vertical starting coordinate (in dots)
+  - `width` - The width of the barcode
+  - `height` - The height of the barcode
+  - `content` - The content to print (can use templating)
+- `qr` - Print QR code
+  - `x` - Horizontal starting coordinate (in dots)
+  - `y` - Vertical starting coordinate (in dots)
+  - `ecc` - ECC level to use for code (valid values: `L`, `M`, `Q`, `H`)
+  - `cellWidth` - Width of a cell (valid values from 0 to 10)
+  - `content` - The content to print (can use templating)

@@ -62,7 +62,7 @@ func (a *App) render(w http.ResponseWriter, r *http.Request, args map[string]str
 
 	jsonResponseObject(w, http.StatusOK, map[string]string{
 		"message":  "CodeList rendered",
-		"codeList": string(code),
+		"codeList": code,
 	})
 }
 
@@ -104,7 +104,7 @@ func (a *App) print(w http.ResponseWriter, r *http.Request, args map[string]stri
 		return
 	}
 
-	err = endpoint.Printer.SendCommand(code)
+	err = endpoint.Printer.SendCommand([]byte(code))
 	if err != nil {
 		jsonResponse(w, http.StatusInternalServerError, fmt.Sprintf("Failed to print: %v", err))
 		return

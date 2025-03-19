@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/gergof/gotspl/gotspl"
-)
+import "strings"
 
 type Endpoint struct {
 	Printer  Printer           `yaml:"printer"`
@@ -10,39 +8,26 @@ type Endpoint struct {
 	CodeList []CodeWrapper     `yaml:"code"`
 }
 
-func (e *Endpoint) RenderCodeList(args map[string]string) ([]byte, error) {
-	label := gotspl.
-		NewTSPLLabel().
-		Cmd(
-			gotspl.SizeCmd().
-				LabelWidth(float64(e.Printer.Label.Width)).
-				LabelLength(float64(e.Printer.Label.Height)),
-		).
-		Cmd(
-			gotspl.GapCmd().
-				LabelDistance(float64(e.Printer.Label.Gap)).
-				LabelOffsetDistance(float64(e.Printer.Label.Offset)),
-		).
-		Cmd(
-			gotspl.ClsCmd(),
-		)
+func (e *Endpoint) RenderCodeList(args map[string]string) (string, error) {
+	label := make([]string, 0, 20)
+
+	label = append(label, TsplSizeCommand(e.Printer.Label.Width, e.Printer.Label.Height))
+	label = append(label, TsplGapCommand(e.Printer.Label.Gap, e.Printer.Label.Offset))
+	label = append(label, TsplDirectionCommand(e.Printer.Direction == "inverted"))
+	label = append(label, TsplClsCommand())
 
 	for _, codeWrapper := range e.CodeList {
 		cmd, err := codeWrapper.Code.ToCommand(args)
 		if err != nil {
-			return nil, err
+			return "", err
 		}
 
-		label = label.Cmd(cmd)
+		label = append(label, cmd)
 	}
 
-	label = label.Cmd(
-		gotspl.PrintCmd().
-			NumberLabels(1).
-			NumberCopies(1),
-	)
+	label = append(label, TsplPrintCommand(1, 1))
 
-	return label.GetTSPLCode()
+	return strings.Join(label, "\n"), nil
 }
 
 func (e *Endpoint) MapArgs(args map[string]string) map[string]string {
