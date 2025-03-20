@@ -1,6 +1,10 @@
 package main
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/tidwall/gjson"
+)
 
 type Endpoint struct {
 	Printer  Printer           `yaml:"printer"`
@@ -30,14 +34,11 @@ func (e *Endpoint) RenderCodeList(args map[string]string) (string, error) {
 	return strings.Join(label, "\n"), nil
 }
 
-func (e *Endpoint) MapArgs(args map[string]string) map[string]string {
+func (e *Endpoint) GetArgsFromJson(json string) map[string]string {
 	result := make(map[string]string)
 
 	for key := range e.Args {
-		value, exists := args[e.Args[key]]
-		if exists {
-			result[key] = value
-		}
+		result[key] = gjson.Get(json, e.Args[key]).String()
 	}
 
 	return result

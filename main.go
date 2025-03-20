@@ -38,10 +38,8 @@ func main() {
 	r.Use(middleware.Logger)
 
 	r.Get("/ping", app.Ping)
-	r.Get("/label/{endpoint}/render", app.RenderWithParams)
-	r.Post("/label/{endpoint}/render", app.RenderWithBody)
-	r.Get("/label/{endpoint}/print", app.PrintWithParams)
-	r.Post("/label/{endpoint}/print", app.PrintWithBody)
+	r.Post("/label/{endpoint}/render", app.Render)
+	r.Post("/label/{endpoint}/print", app.Print)
 
 	log.Printf("Start listening on %s", *listenAddr)
 	if err := http.ListenAndServe(*listenAddr, r); err != nil {

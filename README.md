@@ -35,17 +35,17 @@ The REST API exposes these endpoints:
 
 Always replies with JSON `{"message": "pong"}`.
 
-##### `GET/POST /label/{endpoint}/render`
+##### `POST /label/{endpoint}/render`
 
 Renders the TSPL code for the given endpoint.
 
-When using a GET request, the query params are passed as arguments, when using a POST request, the request body is parsed as JSON.
+The request body is parsed as JSON using the `args` mapping from the configuration.
 
-##### `GET/POST /label/{endpoint}/print`
+##### `POST /label/{endpoint}/print`
 
 Prints 1 label on the printer assigned to the endpoint.
 
-When using a GET request, the query params are passed as arguments, when using a POST request, the request body is parsed as JSON.
+The request body is parsed as JSON using the `args` mapping from the configuration.
 
 
 
@@ -66,7 +66,7 @@ endpoints:
         offset: 0 # offset of gap in mm
     args: # map arguments from query params / json body to template variables.
       ProductName: product_name # template vars should start with uppercase letter
-      Id: id
+      Id: product.id # you can use gjson getters (https://github.com/tidwall/gjson) here
       Expiration: expiration
       Manufacturer: manufacturer
     code: # the codes defined here are executed sequentially

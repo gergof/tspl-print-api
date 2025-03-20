@@ -10,7 +10,7 @@ endpoints:
         offset: 0
     args:
       ProductName: product_name
-      Id: id
+      Id: product.id
       Expiration: expiration
       Manufacturer: manufacturer
     code:

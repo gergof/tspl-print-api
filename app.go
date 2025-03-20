@@ -1,11 +1,12 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/tidwall/gjson"
 )
 
 type App struct {
@@ -22,30 +23,17 @@ func (a *App) Ping(w http.ResponseWriter, r *http.Request) {
 	jsonResponse(w, http.StatusOK, "pong")
 }
 
-func (a *App) RenderWithParams(w http.ResponseWriter, r *http.Request) {
-	args := make(map[string]string)
-
-	for key, values := range r.URL.Query() {
-		if len(values) > 0 {
-			args[key] = values[0]
-		}
+func (a *App) Render(w http.ResponseWriter, r *http.Request) {
+	body, err := a.readBody(r)
+	if err != nil {
+		jsonResponse(w, http.StatusInternalServerError, "Failed to read POST body")
 	}
 
-	a.render(w, r, args)
-}
-
-func (a *App) RenderWithBody(w http.ResponseWriter, r *http.Request) {
-	var args map[string]string
-
-	if err := json.NewDecoder(r.Body).Decode(&args); err != nil {
+	if !gjson.Valid(body) {
 		jsonResponse(w, http.StatusBadRequest, "Body must be a valid JSON")
 		return
 	}
 
-	a.render(w, r, args)
-}
-
-func (a *App) render(w http.ResponseWriter, r *http.Request, args map[string]string) {
 	endpointName := chi.URLParam(r, "endpoint")
 
 	endpoint, exists := a.config.Endpoints[endpointName]
@@ -54,7 +42,7 @@ func (a *App) render(w http.ResponseWriter, r *http.Request, args map[string]str
 		return
 	}
 
-	code, err := endpoint.RenderCodeList(endpoint.MapArgs(args))
+	code, err := endpoint.RenderCodeList(endpoint.GetArgsFromJson(body))
 	if err != nil {
 		jsonResponse(w, http.StatusInternalServerError, fmt.Sprintf("Could not render code list: %v", err))
 		return
@@ -66,30 +54,17 @@ func (a *App) render(w http.ResponseWriter, r *http.Request, args map[string]str
 	})
 }
 
-func (a *App) PrintWithParams(w http.ResponseWriter, r *http.Request) {
-	args := make(map[string]string)
-
-	for key, values := range r.URL.Query() {
-		if len(values) > 0 {
-			args[key] = values[0]
-		}
+func (a *App) Print(w http.ResponseWriter, r *http.Request) {
+	body, err := a.readBody(r)
+	if err != nil {
+		jsonResponse(w, http.StatusInternalServerError, "Failed to read POST body")
 	}
 
-	a.print(w, r, args)
-}
-
-func (a *App) PrintWithBody(w http.ResponseWriter, r *http.Request) {
-	var args map[string]string
-
-	if err := json.NewDecoder(r.Body).Decode(&args); err != nil {
+	if !gjson.Valid(body) {
 		jsonResponse(w, http.StatusBadRequest, "Body must be a valid JSON")
 		return
 	}
 
-	a.print(w, r, args)
-}
-
-func (a *App) print(w http.ResponseWriter, r *http.Request, args map[string]string) {
 	endpointName := chi.URLParam(r, "endpoint")
 
 	endpoint, exists := a.config.Endpoints[endpointName]
@@ -98,7 +73,7 @@ func (a *App) print(w http.ResponseWriter, r *http.Request, args map[string]stri
 		return
 	}
 
-	code, err := endpoint.RenderCodeList(endpoint.MapArgs(args))
+	code, err := endpoint.RenderCodeList(endpoint.GetArgsFromJson(body))
 	if err != nil {
 		jsonResponse(w, http.StatusInternalServerError, fmt.Sprintf("Could not render code list: %v", err))
 		return
@@ -111,4 +86,15 @@ func (a *App) print(w http.ResponseWriter, r *http.Request, args map[string]stri
 	}
 
 	jsonResponse(w, http.StatusOK, "Print requested")
+}
+
+func (a *App) readBody(r *http.Request) (string, error) {
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		return "", err
+	}
+
+	defer r.Body.Close()
+
+	return string(body), nil
 }
