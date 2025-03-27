@@ -30,7 +30,7 @@ func (p *Printer) SendCommand(command []byte) error {
 		return err
 	}
 
-	_, err = file.Write([]byte("\n\n"))
+	_, err = file.Write([]byte("\n\n\n\n\n"))
 
 	return err
 }
