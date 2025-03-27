@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## 1.2.1 - 2025-03-27
+#### Bug Fixes
+- **(printer)** Output more linebreaks at the end to force printing for some printers - (d355bf7) - Fándly Gergő
+
+- - -
+
 ## 1.2.0 - 2025-03-20
 #### Features
 - Allow gjson accessors in args configuration - (18cda3e) - Fándly Gergő
