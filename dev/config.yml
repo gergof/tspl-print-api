@@ -50,21 +50,39 @@ endpoints:
     args:
       Product: product
       Code: grocycode
-      DueDate: due_date
+      Amount: stock_entry.amount
+      Unit: details.quantity_unit_stock.name
+      EntranceDate: stock_entry.purchased_date
+      DueDate: stock_entry.best_before_date
     code:
       - type: qr
-        x: 16
-        y: 16
+        x: 10
+        y: 40
         ecc: L
         cellWidth: 5
         content: "{{ .Code }}"
       - type: text
-        x: 160
+        x: 150
         y: 16
         font: "3"
-        content: "{{ .Product }}"
+        content: "{{ if gt (len .Product) 14 }}{{ slice .Product 0 14 }}{{ else }}{{ .Product }}{{ end }}"
       - type: text
-        x: 160
+        x: 150
+        y: 44
+        font: "3"
+        content: "{{ if gt (len .Product) 14 }}{{ slice .Product 14 }}{{ end }}"
+      - type: text
+        x: 150
+        y: 90
+        font: "4"
+        content: "{{ .Amount }} {{ .Unit }}"
+      - type: text
+        x: 150
+        y: 180
+        font: "2"
+        content: "Ent: {{ .EntranceDate }}"
+      - type: text
+        x: 150
         y: 204
         font: "2"
-        content: "Exp.: {{ slice .DueDate 4 }}"
+        content: "Exp: {{ .DueDate }}"

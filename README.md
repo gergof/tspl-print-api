@@ -98,6 +98,8 @@ endpoints:
         content: "MFR {{ .Manufacturer }}" # you can use templates with additional text
 ```
 
+The config file in `dev/config.yml` also contains an example configuration for printing [grocycode](https://github.com/grocy/grocy/blob/master/docs/grocycode.md) labels.
+
 ##### Supported Codes and arguments
 
 - `text` - Print text
