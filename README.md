@@ -137,3 +137,9 @@ The config file in `dev/config.yml` also contains an example configuration for p
   - `space` - Space between the lines (default to 0)
   - `align` - Text alignment (valid values: `default`, `left`, `right`, `center`)
   - `content` - The content to print (can use templating)
+- `datamatrix` - Print datamatrix code
+  - `x` - Horizontal starting coordinate (in dots)
+  - `y` - Vertical starting coordinate (in dots)
+  - `width` - The width of the datamatrix code
+  - `height` - The height of the datamatrix code
+  - `content` - The content to print (can use templating)
