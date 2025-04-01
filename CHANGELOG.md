@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## 1.3.1 - 2025-04-01
+#### Improvements
+- **(printer)** Force sync to printer, but don't fail if sync fails - (61480e2) - Fándly Gergő
+
+- - -
+
 ## 1.3.0 - 2025-03-31
 #### Documentation
 - Added fancier grocycode example - (a399825) - Fándly Gergő
