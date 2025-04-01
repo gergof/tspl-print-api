@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"os"
 )
 
@@ -31,6 +32,12 @@ func (p *Printer) SendCommand(command []byte) error {
 	}
 
 	_, err = file.Write([]byte("\n\n\n\n\n"))
+
+	err = file.Sync()
+	if err != nil {
+		// not fatal error, just log it
+		log.Printf("Failed to force sync to printer: %v", err)
+	}
 
 	return err
 }
