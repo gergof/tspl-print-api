@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## 1.3.2 - 2025-05-20
+#### Bug Fixes
+- **(printer)** Don't cause 500 errors when syncing fails on unsupported drivers - (21c726d) - Fándly Gergő
+
+- - -
+
 ## 1.3.1 - 2025-04-01
 #### Improvements
 - **(printer)** Force sync to printer, but don't fail if sync fails - (61480e2) - Fándly Gergő
