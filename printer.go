@@ -26,6 +26,11 @@ func (p *Printer) SendCommand(command []byte) error {
 
 	defer file.Close()
 
+	_, err = file.Write([]byte("\n\n\n\n\n"))
+	if err != nil {
+		return err
+	}
+
 	_, err = file.Write(command)
 	if err != nil {
 		return err
@@ -33,8 +38,8 @@ func (p *Printer) SendCommand(command []byte) error {
 
 	_, err = file.Write([]byte("\n\n\n\n\n"))
 
-	err = file.Sync()
-	if err != nil {
+	errSync := file.Sync()
+	if errSync != nil {
 		// not fatal error, just log it
 		log.Printf("Failed to force sync to printer: %v", err)
 	}
