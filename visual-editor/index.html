@@ -1,0 +1,1189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TSPL Print API Visual Editor</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.35;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: #202124;
+      background: #f8f9fa;
+    }
+
+    header,
+    main {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid #d8dee4;
+      background: #fff;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0 0 12px;
+      font-weight: 600;
+    }
+
+    h1 {
+      font-size: 20px;
+    }
+
+    h2 {
+      font-size: 16px;
+    }
+
+    h3 {
+      font-size: 14px;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      min-height: 32px;
+      padding: 4px 10px;
+      border: 1px solid #b8c0cc;
+      border-radius: 4px;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #eef2f7;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      min-height: 32px;
+      padding: 4px 8px;
+      border: 1px solid #b8c0cc;
+      border-radius: 4px;
+      background: #fff;
+    }
+
+    textarea {
+      min-height: 320px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      font-size: 13px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 320px minmax(360px, 1fr) 380px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    section {
+      padding: 12px;
+      border: 1px solid #d8dee4;
+      background: #fff;
+    }
+
+    .stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .arg-row,
+    .item-row {
+      display: grid;
+      gap: 8px;
+      align-items: end;
+    }
+
+    .arg-row {
+      grid-template-columns: 1fr 1fr auto;
+    }
+
+    .item-row {
+      grid-template-columns: 1fr auto;
+    }
+
+    .editor-wrap {
+      overflow: auto;
+      padding: 16px;
+      border: 1px solid #d8dee4;
+      background: #eceff3;
+    }
+
+    svg {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto;
+      background: #fff;
+      border: 1px solid #9aa4b2;
+      touch-action: none;
+    }
+
+    .label-item {
+      cursor: move;
+    }
+
+    .label-item.selected .selection {
+      display: block;
+    }
+
+    .selection {
+      display: none;
+      fill: none;
+      stroke: #1a73e8;
+      stroke-width: 2;
+      stroke-dasharray: 5 4;
+      pointer-events: none;
+    }
+
+    .muted {
+      color: #5f6368;
+      font-size: 12px;
+    }
+
+    .list {
+      display: grid;
+      gap: 6px;
+      max-height: 220px;
+      overflow: auto;
+    }
+
+    .list button {
+      width: 100%;
+      text-align: left;
+    }
+
+    .list button.selected {
+      border-color: #1a73e8;
+      background: #e8f0fe;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 1100px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>TSPL Print API Visual Editor</h1>
+    <div class="button-row">
+      <button id="applyYaml" type="button">Apply YAML</button>
+      <button id="copyYaml" type="button">Copy YAML</button>
+      <button id="downloadYaml" type="button">Download YAML</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="stack">
+      <div>
+        <h2>Endpoint</h2>
+        <div class="grid-2">
+          <div>
+            <label for="endpointName">Name</label>
+            <input id="endpointName" value="my-label">
+          </div>
+          <div>
+            <label for="direction">Direction</label>
+            <select id="direction">
+              <option value="normal">normal</option>
+              <option value="inverted">inverted</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h2>Printer</h2>
+        <div>
+          <label for="device">Device</label>
+          <input id="device" value="/dev/usb/lp0">
+        </div>
+        <div class="grid-2">
+          <div>
+            <label for="labelWidth">Width mm</label>
+            <input id="labelWidth" type="number" min="1" value="50">
+          </div>
+          <div>
+            <label for="labelHeight">Height mm</label>
+            <input id="labelHeight" type="number" min="1" value="30">
+          </div>
+          <div>
+            <label for="gap">Gap mm</label>
+            <input id="gap" type="number" min="0" value="2">
+          </div>
+          <div>
+            <label for="offset">Offset mm</label>
+            <input id="offset" type="number" value="0">
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h2>Args</h2>
+        <div id="argsList" class="stack"></div>
+        <div class="button-row">
+          <button id="addArg" type="button">Add arg</button>
+        </div>
+      </div>
+
+      <div>
+        <h2>Add Element</h2>
+        <div class="button-row">
+          <button data-add="text" type="button">Text</button>
+          <button data-add="barcode" type="button">Barcode</button>
+          <button data-add="qr" type="button">QR</button>
+          <button data-add="line" type="button">Line</button>
+          <button data-add="box" type="button">Box</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="stack">
+      <div>
+        <h2>Label Preview</h2>
+        <p class="muted">Drag elements to move them. Coordinates are in printer dots.</p>
+      </div>
+      <div class="editor-wrap">
+        <svg id="preview" role="img" aria-label="Label preview"></svg>
+      </div>
+    </section>
+
+    <section class="stack">
+      <div>
+        <h2>Selected Element</h2>
+        <div id="emptySelection" class="muted">Select or add an element.</div>
+        <div id="elementForm" class="stack hidden"></div>
+      </div>
+
+      <div>
+        <h2>Elements</h2>
+        <div id="elementsList" class="list"></div>
+      </div>
+
+      <div>
+        <h2>Generated YAML</h2>
+        <p id="yamlStatus" class="muted"></p>
+        <textarea id="yamlOutput" spellcheck="false"></textarea>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const state = {
+      selectedId: null,
+      args: [
+        { name: "ProductName", path: "product_name" },
+        { name: "Id", path: "product.id" }
+      ],
+      elements: [
+        { id: uid(), type: "text", x: 20, y: 20, font: "3", align: "default", content: "{{ .ProductName }}" },
+        { id: uid(), type: "qr", x: 20, y: 60, ecc: "L", cellWidth: 5, content: "{{ .Id }}" },
+        { id: uid(), type: "box", x: 10, y: 10, width: 360, height: 220, thickness: 2 }
+      ]
+    };
+
+    const fields = {
+      endpointName: document.getElementById("endpointName"),
+      device: document.getElementById("device"),
+      direction: document.getElementById("direction"),
+      labelWidth: document.getElementById("labelWidth"),
+      labelHeight: document.getElementById("labelHeight"),
+      gap: document.getElementById("gap"),
+      offset: document.getElementById("offset")
+    };
+
+    const preview = document.getElementById("preview");
+    const argsList = document.getElementById("argsList");
+    const elementsList = document.getElementById("elementsList");
+    const elementForm = document.getElementById("elementForm");
+    const emptySelection = document.getElementById("emptySelection");
+    const yamlOutput = document.getElementById("yamlOutput");
+    const yamlStatus = document.getElementById("yamlStatus");
+
+    let drag = null;
+
+    Object.values(fields).forEach((field) => field.addEventListener("input", () => renderLive({ preview: true })));
+    document.getElementById("addArg").addEventListener("click", addArg);
+    document.getElementById("applyYaml").addEventListener("click", applyYaml);
+    document.getElementById("copyYaml").addEventListener("click", copyYaml);
+    document.getElementById("downloadYaml").addEventListener("click", downloadYaml);
+    yamlOutput.addEventListener("input", () => {
+      yamlStatus.textContent = "YAML edited. Click Apply YAML to update the editor.";
+    });
+
+    document.querySelectorAll("[data-add]").forEach((button) => {
+      button.addEventListener("click", () => addElement(button.dataset.add));
+    });
+
+    preview.addEventListener("pointermove", onPointerMove);
+    preview.addEventListener("pointerup", stopDrag);
+    preview.addEventListener("pointercancel", stopDrag);
+
+    render();
+
+    function uid() {
+      return Math.random().toString(36).slice(2, 10);
+    }
+
+    function numberValue(id, fallback) {
+      const value = Number(fields[id].value);
+      return Number.isFinite(value) ? value : fallback;
+    }
+
+    function dotsPerMm() {
+      return 8;
+    }
+
+    function labelDots() {
+      return {
+        width: Math.max(1, Math.round(numberValue("labelWidth", 50) * dotsPerMm())),
+        height: Math.max(1, Math.round(numberValue("labelHeight", 30) * dotsPerMm()))
+      };
+    }
+
+    function selectedElement() {
+      return state.elements.find((element) => element.id === state.selectedId) || null;
+    }
+
+    function addArg() {
+      state.args.push({ name: "NewArg", path: "new_arg" });
+      render();
+    }
+
+    function removeArg(index) {
+      state.args.splice(index, 1);
+      render();
+    }
+
+    function addElement(type) {
+      const base = { id: uid(), type, x: 40, y: 40 };
+      let element;
+
+      if (type === "text") {
+        element = { ...base, font: "2", align: "default", content: "{{ .ProductName }}" };
+      } else if (type === "barcode") {
+        element = { ...base, height: 80, codeType: "128", humanReadable: "center", align: "default", content: "{{ .Id }}" };
+      } else if (type === "qr") {
+        element = { ...base, ecc: "L", cellWidth: 5, content: "{{ .Id }}" };
+      } else if (type === "line") {
+        element = { ...base, width: 160, height: 2 };
+      } else {
+        element = { ...base, width: 180, height: 80, thickness: 1 };
+      }
+
+      state.elements.push(element);
+      state.selectedId = element.id;
+      render();
+    }
+
+    function removeSelected() {
+      state.elements = state.elements.filter((element) => element.id !== state.selectedId);
+      state.selectedId = null;
+      render();
+    }
+
+    function duplicateSelected() {
+      const current = selectedElement();
+      if (!current) return;
+
+      const clone = { ...current, id: uid(), x: current.x + 10, y: current.y + 10 };
+      state.elements.push(clone);
+      state.selectedId = clone.id;
+      render();
+    }
+
+    function moveSelected(delta) {
+      const current = selectedElement();
+      if (!current) return;
+
+      current.x += delta.x;
+      current.y += delta.y;
+      render();
+    }
+
+    function render() {
+      renderArgs();
+      renderPreview();
+      renderElementsList();
+      renderElementForm();
+      yamlOutput.value = buildYaml();
+    }
+
+    function renderLive(options = {}) {
+      if (options.preview) renderPreview();
+      if (options.elementsList) renderElementsList();
+      yamlOutput.value = buildYaml();
+    }
+
+    function renderArgs() {
+      argsList.innerHTML = "";
+
+      state.args.forEach((arg, index) => {
+        const row = document.createElement("div");
+        row.className = "arg-row";
+
+        row.append(
+          inputControl("Name", arg.name, (value) => {
+            arg.name = value;
+            renderLive();
+          }),
+          inputControl("JSON path", arg.path, (value) => {
+            arg.path = value;
+            renderLive();
+          }),
+          buttonControl("Remove", () => removeArg(index))
+        );
+
+        argsList.append(row);
+      });
+    }
+
+    function renderPreview() {
+      const size = labelDots();
+      preview.setAttribute("viewBox", `0 0 ${size.width} ${size.height}`);
+      preview.setAttribute("width", size.width);
+      preview.setAttribute("height", size.height);
+      preview.innerHTML = "";
+
+      const background = svgEl("rect", {
+        x: 0,
+        y: 0,
+        width: size.width,
+        height: size.height,
+        fill: "#fff"
+      });
+      preview.append(background);
+
+      state.elements.forEach((element) => {
+        const group = svgEl("g", {
+          class: `label-item${element.id === state.selectedId ? " selected" : ""}`,
+          "data-id": element.id
+        });
+        group.addEventListener("pointerdown", (event) => startDrag(event, element.id));
+
+        renderElementSvg(group, element);
+        group.append(selectionRect(element));
+        preview.append(group);
+      });
+    }
+
+    function renderElementSvg(group, element) {
+      if (element.type === "text") {
+        const text = previewText(element.content);
+        const anchor = svgTextAnchor(element.align);
+        group.append(svgEl("text", {
+          x: element.x,
+          y: element.y + 18,
+          fill: "#111",
+          "font-size": fontSize(element.font),
+          "font-family": "monospace",
+          "text-anchor": anchor
+        }, text));
+      } else if (element.type === "barcode") {
+        const x = alignedX(element.x, 140, element.align);
+        group.append(svgEl("rect", {
+          x,
+          y: element.y,
+          width: 140,
+          height: element.height,
+          fill: "#111"
+        }));
+        group.append(svgEl("text", {
+          x: x + 70,
+          y: element.y + element.height + 16,
+          fill: "#111",
+          "font-size": 14,
+          "font-family": "monospace",
+          "text-anchor": "middle"
+        }, "BARCODE"));
+      } else if (element.type === "qr") {
+        const size = Math.max(24, element.cellWidth * 21);
+        group.append(svgEl("rect", {
+          x: element.x,
+          y: element.y,
+          width: size,
+          height: size,
+          fill: "#111"
+        }));
+        group.append(svgEl("rect", {
+          x: element.x + 8,
+          y: element.y + 8,
+          width: size - 16,
+          height: size - 16,
+          fill: "#fff"
+        }));
+        group.append(svgEl("text", {
+          x: element.x + 10,
+          y: element.y + size / 2 + 5,
+          fill: "#111",
+          "font-size": 14,
+          "font-family": "monospace"
+        }, "QR"));
+      } else if (element.type === "line") {
+        group.append(svgEl("rect", {
+          x: element.x,
+          y: element.y,
+          width: element.width,
+          height: element.height,
+          fill: "#111"
+        }));
+      } else if (element.type === "box") {
+        group.append(svgEl("rect", {
+          x: element.x,
+          y: element.y,
+          width: element.width,
+          height: element.height,
+          fill: "none",
+          stroke: "#111",
+          "stroke-width": element.thickness
+        }));
+      }
+    }
+
+    function selectionRect(element) {
+      const bounds = elementBounds(element);
+      return svgEl("rect", {
+        class: "selection",
+        x: bounds.x - 4,
+        y: bounds.y - 4,
+        width: bounds.width + 8,
+        height: bounds.height + 8
+      });
+    }
+
+    function elementBounds(element) {
+      if (element.type === "text") {
+        const width = Math.max(80, previewText(element.content).length * 8);
+        return { x: alignedX(element.x, width, element.align), y: element.y, width, height: 24 };
+      }
+      if (element.type === "barcode") {
+        return { x: alignedX(element.x, 140, element.align), y: element.y, width: 140, height: element.height + 20 };
+      }
+      if (element.type === "qr") {
+        const size = Math.max(24, element.cellWidth * 21);
+        return { x: element.x, y: element.y, width: size, height: size };
+      }
+      return {
+        x: element.x,
+        y: element.y,
+        width: element.width,
+        height: element.height
+      };
+    }
+
+    function renderElementsList() {
+      elementsList.innerHTML = "";
+
+      state.elements.forEach((element, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = element.id === state.selectedId ? "selected" : "";
+        button.textContent = `${index + 1}. ${element.type} at ${element.x},${element.y}`;
+        button.addEventListener("click", () => {
+          state.selectedId = element.id;
+          render();
+        });
+        elementsList.append(button);
+      });
+    }
+
+    function renderElementForm() {
+      const element = selectedElement();
+      elementForm.innerHTML = "";
+
+      if (!element) {
+        emptySelection.classList.remove("hidden");
+        elementForm.classList.add("hidden");
+        return;
+      }
+
+      emptySelection.classList.add("hidden");
+      elementForm.classList.remove("hidden");
+
+      elementForm.append(
+        readonlyControl("Type", element.type),
+        numberControl("X", element.x, (value) => updateElement(element, "x", value)),
+        numberControl("Y", element.y, (value) => updateElement(element, "y", value))
+      );
+
+      if (element.type === "text") {
+        elementForm.append(
+          inputControl("Font", element.font, (value) => updateElement(element, "font", value)),
+          selectControl("Align", element.align, ["default", "left", "center", "right"], (value) => updateElement(element, "align", value)),
+          textareaControl("Content", element.content, (value) => updateElement(element, "content", value))
+        );
+      } else if (element.type === "barcode") {
+        elementForm.append(
+          numberControl("Height", element.height, (value) => updateElement(element, "height", value)),
+          inputControl("Code type", element.codeType, (value) => updateElement(element, "codeType", value)),
+          selectControl("Human readable", element.humanReadable, ["none", "left", "center", "right"], (value) => updateElement(element, "humanReadable", value)),
+          selectControl("Align", element.align, ["default", "left", "center", "right"], (value) => updateElement(element, "align", value)),
+          textareaControl("Content", element.content, (value) => updateElement(element, "content", value))
+        );
+      } else if (element.type === "qr") {
+        elementForm.append(
+          selectControl("ECC", element.ecc, ["L", "M", "Q", "H"], (value) => updateElement(element, "ecc", value)),
+          numberControl("Cell width", element.cellWidth, (value) => updateElement(element, "cellWidth", value)),
+          textareaControl("Content", element.content, (value) => updateElement(element, "content", value))
+        );
+      } else if (element.type === "line") {
+        elementForm.append(
+          numberControl("Width", element.width, (value) => updateElement(element, "width", value)),
+          numberControl("Height", element.height, (value) => updateElement(element, "height", value))
+        );
+      } else if (element.type === "box") {
+        elementForm.append(
+          numberControl("Width", element.width, (value) => updateElement(element, "width", value)),
+          numberControl("Height", element.height, (value) => updateElement(element, "height", value)),
+          numberControl("Thickness", element.thickness, (value) => updateElement(element, "thickness", value))
+        );
+      }
+
+      const controls = document.createElement("div");
+      controls.className = "button-row";
+      controls.append(
+        buttonControl("Up", () => moveSelected({ x: 0, y: -1 })),
+        buttonControl("Down", () => moveSelected({ x: 0, y: 1 })),
+        buttonControl("Left", () => moveSelected({ x: -1, y: 0 })),
+        buttonControl("Right", () => moveSelected({ x: 1, y: 0 })),
+        buttonControl("Duplicate", duplicateSelected),
+        buttonControl("Remove", removeSelected)
+      );
+      elementForm.append(controls);
+    }
+
+    function updateElement(element, key, value) {
+      element[key] = value;
+      renderLive({ preview: true, elementsList: key === "x" || key === "y" });
+    }
+
+    function startDrag(event, id) {
+      const element = state.elements.find((item) => item.id === id);
+      if (!element) return;
+
+      state.selectedId = id;
+      const point = svgPoint(event);
+      drag = {
+        id,
+        offsetX: point.x - element.x,
+        offsetY: point.y - element.y
+      };
+      preview.setPointerCapture(event.pointerId);
+      render();
+    }
+
+    function onPointerMove(event) {
+      if (!drag) return;
+
+      const element = state.elements.find((item) => item.id === drag.id);
+      if (!element) return;
+
+      const point = svgPoint(event);
+      element.x = Math.round(point.x - drag.offsetX);
+      element.y = Math.round(point.y - drag.offsetY);
+      render();
+    }
+
+    function stopDrag() {
+      drag = null;
+    }
+
+    function svgPoint(event) {
+      const point = preview.createSVGPoint();
+      point.x = event.clientX;
+      point.y = event.clientY;
+      return point.matrixTransform(preview.getScreenCTM().inverse());
+    }
+
+    function fontSize(font) {
+      const value = Number(font);
+      if (!Number.isFinite(value)) return 18;
+      return Math.max(10, value * 7);
+    }
+
+    function alignedX(x, width, align) {
+      if (align === "center") return x - width / 2;
+      if (align === "right") return x - width;
+      return x;
+    }
+
+    function svgTextAnchor(align) {
+      if (align === "center") return "middle";
+      if (align === "right") return "end";
+      return "start";
+    }
+
+    function previewText(content) {
+      return content.replace(/\{\{\s*/g, "").replace(/\s*\}\}/g, "").slice(0, 32) || "Text";
+    }
+
+    function buildYaml() {
+      const lines = [];
+      const endpointName = fields.endpointName.value.trim() || "my-label";
+
+      lines.push("endpoints:");
+      lines.push(`  ${yamlKey(endpointName)}:`);
+      lines.push("    printer:");
+      lines.push(`      device: ${yamlScalar(fields.device.value)}`);
+      lines.push(`      direction: ${yamlScalar(fields.direction.value)}`);
+      lines.push("      label:");
+      lines.push(`        width: ${numberValue("labelWidth", 50)}`);
+      lines.push(`        height: ${numberValue("labelHeight", 30)}`);
+      lines.push(`        gap: ${numberValue("gap", 0)}`);
+      lines.push(`        offset: ${numberValue("offset", 0)}`);
+      lines.push("    args:");
+
+      if (state.args.length === 0) {
+        lines.push("      {}");
+      } else {
+        state.args.forEach((arg) => {
+          lines.push(`      ${yamlKey(arg.name || "Arg")}: ${yamlScalar(arg.path || "")}`);
+        });
+      }
+
+      lines.push("    code:");
+      state.elements.forEach((element) => appendElementYaml(lines, element));
+      return lines.join("\n") + "\n";
+    }
+
+    function applyYaml() {
+      try {
+        const parsed = parseYamlConfig(yamlOutput.value);
+
+        fields.endpointName.value = parsed.endpointName;
+        fields.device.value = parsed.device;
+        fields.direction.value = parsed.direction;
+        fields.labelWidth.value = parsed.label.width;
+        fields.labelHeight.value = parsed.label.height;
+        fields.gap.value = parsed.label.gap;
+        fields.offset.value = parsed.label.offset;
+
+        state.args = parsed.args;
+        state.elements = parsed.elements;
+        state.selectedId = state.elements[0]?.id || null;
+        yamlStatus.textContent = "YAML applied.";
+        render();
+      } catch (error) {
+        yamlStatus.textContent = error.message;
+      }
+    }
+
+    function parseYamlConfig(source) {
+      const lines = source
+        .split(/\r?\n/)
+        .map((raw) => ({
+          indent: raw.match(/^ */)[0].length,
+          text: stripYamlComment(raw).trim()
+        }))
+        .filter((line) => line.text !== "");
+
+      const endpointsIndex = lines.findIndex((line) => line.indent === 0 && line.text === "endpoints:");
+      if (endpointsIndex === -1) {
+        throw new Error("YAML must contain an endpoints section.");
+      }
+
+      const endpointLine = lines.find((line, index) => index > endpointsIndex && line.indent === 2 && line.text.endsWith(":"));
+      if (!endpointLine) {
+        throw new Error("YAML must contain one endpoint under endpoints.");
+      }
+
+      const endpointName = parseYamlKey(endpointLine.text.slice(0, -1));
+      const parsed = {
+        endpointName,
+        device: "/dev/usb/lp0",
+        direction: "normal",
+        label: { width: 50, height: 30, gap: 0, offset: 0 },
+        args: [],
+        elements: []
+      };
+
+      const endpointStart = lines.indexOf(endpointLine);
+      const endpointEnd = findSectionEnd(lines, endpointStart, 2);
+      const endpointLines = lines.slice(endpointStart + 1, endpointEnd);
+
+      parsePrinterSection(endpointLines, parsed);
+      parseArgsSection(endpointLines, parsed);
+      parseCodeSection(endpointLines, parsed);
+
+      return parsed;
+    }
+
+    function parsePrinterSection(lines, parsed) {
+      const printerIndex = lines.findIndex((line) => line.indent === 4 && line.text === "printer:");
+      if (printerIndex === -1) return;
+
+      const printerEnd = findSectionEnd(lines, printerIndex, 4);
+      const printerLines = lines.slice(printerIndex + 1, printerEnd);
+
+      printerLines.forEach((line) => {
+        if (line.indent === 6) {
+          const pair = parseYamlPair(line.text);
+          if (!pair) return;
+          if (pair.key === "device") parsed.device = String(pair.value);
+          if (pair.key === "direction") parsed.direction = String(pair.value);
+        }
+
+        if (line.indent === 8) {
+          const pair = parseYamlPair(line.text);
+          if (!pair) return;
+          if (["width", "height", "gap", "offset"].includes(pair.key)) {
+            parsed.label[pair.key] = asInt(pair.value);
+          }
+        }
+      });
+    }
+
+    function parseArgsSection(lines, parsed) {
+      const argsIndex = lines.findIndex((line) => line.indent === 4 && line.text === "args:");
+      if (argsIndex === -1) return;
+
+      const argsEnd = findSectionEnd(lines, argsIndex, 4);
+      parsed.args = lines.slice(argsIndex + 1, argsEnd)
+        .filter((line) => line.indent === 6 && line.text !== "{}")
+        .map((line) => parseYamlPair(line.text))
+        .filter(Boolean)
+        .map((pair) => ({ name: pair.key, path: String(pair.value) }));
+    }
+
+    function parseCodeSection(lines, parsed) {
+      const codeIndex = lines.findIndex((line) => line.indent === 4 && line.text === "code:");
+      if (codeIndex === -1) return;
+
+      const codeEnd = findSectionEnd(lines, codeIndex, 4);
+      const codeLines = lines.slice(codeIndex + 1, codeEnd);
+      let current = null;
+
+      codeLines.forEach((line) => {
+        if (line.indent === 6 && line.text.startsWith("- ")) {
+          if (current) parsed.elements.push(normalizeElement(current));
+          current = { id: uid() };
+
+          const pair = parseYamlPair(line.text.slice(2));
+          if (pair) current[pair.key] = pair.value;
+          return;
+        }
+
+        if (current && line.indent === 8) {
+          const pair = parseYamlPair(line.text);
+          if (pair) current[pair.key] = pair.value;
+        }
+      });
+
+      if (current) parsed.elements.push(normalizeElement(current));
+      parsed.elements = parsed.elements.filter((element) => element.type);
+    }
+
+    function normalizeElement(raw) {
+      const type = String(raw.type || "");
+      const element = {
+        id: raw.id || uid(),
+        type,
+        x: asInt(raw.x),
+        y: asInt(raw.y)
+      };
+
+      if (type === "text") {
+        element.font = String(raw.font || "1");
+        element.align = String(raw.align || "default");
+        element.content = String(raw.content || "");
+      } else if (type === "barcode") {
+        element.height = asInt(raw.height);
+        element.codeType = String(raw.codeType || "128");
+        element.humanReadable = String(raw.humanReadable || "none");
+        element.align = String(raw.align || "default");
+        element.content = String(raw.content || "");
+      } else if (type === "qr") {
+        element.ecc = String(raw.ecc || "L");
+        element.cellWidth = asInt(raw.cellWidth || 5);
+        element.content = String(raw.content || "");
+      } else if (type === "line") {
+        element.width = asInt(raw.width);
+        element.height = asInt(raw.height);
+      } else if (type === "box") {
+        element.width = asInt(raw.width);
+        element.height = asInt(raw.height);
+        element.thickness = asInt(raw.thickness || 1);
+      }
+
+      return element;
+    }
+
+    function findSectionEnd(lines, startIndex, indent) {
+      for (let index = startIndex + 1; index < lines.length; index += 1) {
+        if (lines[index].indent <= indent) return index;
+      }
+      return lines.length;
+    }
+
+    function stripYamlComment(raw) {
+      let quote = null;
+
+      for (let index = 0; index < raw.length; index += 1) {
+        const char = raw[index];
+        const previous = raw[index - 1];
+
+        if ((char === '"' || char === "'") && previous !== "\\") {
+          quote = quote === char ? null : quote || char;
+        }
+
+        if (char === "#" && !quote && (index === 0 || /\s/.test(previous))) {
+          return raw.slice(0, index);
+        }
+      }
+
+      return raw;
+    }
+
+    function parseYamlPair(text) {
+      const separator = findYamlSeparator(text);
+      if (separator === -1) return null;
+
+      const key = parseYamlKey(text.slice(0, separator).trim());
+      const value = parseYamlValue(text.slice(separator + 1).trim());
+      return { key, value };
+    }
+
+    function findYamlSeparator(text) {
+      let quote = null;
+
+      for (let index = 0; index < text.length; index += 1) {
+        const char = text[index];
+        const previous = text[index - 1];
+
+        if ((char === '"' || char === "'") && previous !== "\\") {
+          quote = quote === char ? null : quote || char;
+        }
+
+        if (char === ":" && !quote) {
+          return index;
+        }
+      }
+
+      return -1;
+    }
+
+    function parseYamlKey(value) {
+      return String(parseYamlValue(value));
+    }
+
+    function parseYamlValue(value) {
+      if (value === "") return "";
+
+      if (value.startsWith('"') && value.endsWith('"')) {
+        try {
+          return JSON.parse(value);
+        } catch {
+          return value.slice(1, -1);
+        }
+      }
+
+      if (value.startsWith("'") && value.endsWith("'")) {
+        return value.slice(1, -1).replace(/''/g, "'");
+      }
+
+      if (/^-?\d+(\.\d+)?$/.test(value)) {
+        return Number(value);
+      }
+
+      return value;
+    }
+
+    function appendElementYaml(lines, element) {
+      lines.push(`      - type: ${element.type}`);
+      lines.push(`        x: ${asInt(element.x)}`);
+      lines.push(`        y: ${asInt(element.y)}`);
+
+      if (element.type === "text") {
+        lines.push(`        font: ${yamlScalar(element.font)}`);
+        lines.push(`        align: ${yamlScalar(element.align)}`);
+        lines.push(`        content: ${yamlScalar(element.content)}`);
+      } else if (element.type === "barcode") {
+        lines.push(`        height: ${asInt(element.height)}`);
+        lines.push(`        codeType: ${yamlScalar(element.codeType)}`);
+        lines.push(`        humanReadable: ${yamlScalar(element.humanReadable)}`);
+        lines.push(`        align: ${yamlScalar(element.align)}`);
+        lines.push(`        content: ${yamlScalar(element.content)}`);
+      } else if (element.type === "qr") {
+        lines.push(`        ecc: ${yamlScalar(element.ecc)}`);
+        lines.push(`        cellWidth: ${asInt(element.cellWidth)}`);
+        lines.push(`        content: ${yamlScalar(element.content)}`);
+      } else if (element.type === "line") {
+        lines.push(`        width: ${asInt(element.width)}`);
+        lines.push(`        height: ${asInt(element.height)}`);
+      } else if (element.type === "box") {
+        lines.push(`        width: ${asInt(element.width)}`);
+        lines.push(`        height: ${asInt(element.height)}`);
+        lines.push(`        thickness: ${asInt(element.thickness)}`);
+      }
+    }
+
+    function yamlKey(value) {
+      const key = String(value || "").trim();
+      return /^[A-Za-z0-9_-]+$/.test(key) ? key : yamlScalar(key);
+    }
+
+    function yamlScalar(value) {
+      const text = String(value ?? "");
+      if (/^-?\d+(\.\d+)?$/.test(text) || ["true", "false", "null", ""].includes(text.toLowerCase())) {
+        return JSON.stringify(text);
+      }
+      if (/^[A-Za-z0-9_./:-]+$/.test(text)) {
+        return text;
+      }
+      return JSON.stringify(text);
+    }
+
+    function asInt(value) {
+      const number = Number(value);
+      return Number.isFinite(number) ? Math.round(number) : 0;
+    }
+
+    async function copyYaml() {
+      yamlOutput.select();
+      try {
+        await navigator.clipboard.writeText(yamlOutput.value);
+      } catch {
+        document.execCommand("copy");
+      }
+    }
+
+    function downloadYaml() {
+      const blob = new Blob([yamlOutput.value], { type: "text/yaml" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${fields.endpointName.value.trim() || "label"}.yml`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    function svgEl(name, attrs, text) {
+      const element = document.createElementNS("http://www.w3.org/2000/svg", name);
+      Object.entries(attrs || {}).forEach(([key, value]) => element.setAttribute(key, value));
+      if (text !== undefined) {
+        element.textContent = text;
+      }
+      return element;
+    }
+
+    function inputControl(labelText, value, onChange) {
+      const wrap = controlWrap(labelText);
+      const input = document.createElement("input");
+      input.value = value ?? "";
+      input.addEventListener("input", () => onChange(input.value));
+      wrap.append(input);
+      return wrap;
+    }
+
+    function numberControl(labelText, value, onChange) {
+      const wrap = controlWrap(labelText);
+      const input = document.createElement("input");
+      input.type = "number";
+      input.value = value ?? 0;
+      input.addEventListener("input", () => onChange(asInt(input.value)));
+      wrap.append(input);
+      return wrap;
+    }
+
+    function textareaControl(labelText, value, onChange) {
+      const wrap = controlWrap(labelText);
+      const textarea = document.createElement("textarea");
+      textarea.value = value ?? "";
+      textarea.style.minHeight = "72px";
+      textarea.addEventListener("input", () => onChange(textarea.value));
+      wrap.append(textarea);
+      return wrap;
+    }
+
+    function selectControl(labelText, value, options, onChange) {
+      const wrap = controlWrap(labelText);
+      const select = document.createElement("select");
+      options.forEach((optionValue) => {
+        const option = document.createElement("option");
+        option.value = optionValue;
+        option.textContent = optionValue;
+        select.append(option);
+      });
+      select.value = value;
+      select.addEventListener("change", () => onChange(select.value));
+      wrap.append(select);
+      return wrap;
+    }
+
+    function readonlyControl(labelText, value) {
+      const wrap = controlWrap(labelText);
+      const input = document.createElement("input");
+      input.value = value;
+      input.readOnly = true;
+      wrap.append(input);
+      return wrap;
+    }
+
+    function buttonControl(text, onClick) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = text;
+      button.addEventListener("click", onClick);
+      return button;
+    }
+
+    function controlWrap(labelText) {
+      const wrap = document.createElement("div");
+      const label = document.createElement("label");
+      label.textContent = labelText;
+      wrap.append(label);
+      return wrap;
+    }
+  </script>
+</body>
+</html>

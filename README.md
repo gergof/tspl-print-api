@@ -25,6 +25,10 @@ Usage of ./tspl-print-api:
 
 You also have to provide a configuration file. You can see an example one in `dev/config.yml`.
 
+#### Visual editor
+
+A browser-based visual editor is available in `visual-editor/index.html`. Open the file in a browser to lay out text, barcodes, QR codes, lines, and boxes on a label preview. The editor generates YAML compatible with the `code` section of the configuration file, and you can also paste existing YAML into the editor and click **Apply YAML** to continue editing it visually.
+
 
 
 ### API
