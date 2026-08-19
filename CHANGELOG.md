@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## 1.5.0 - 2026-08-19
+#### Features
+- Added commands for drawing lines and boxes - (5ebffdd) - Gergő Fándly
+
+- - -
+
 ## 1.4.0 - 2026-08-19
 #### Build / CI
 - Switched to github actions for building - (6d85c9f) - Gergő Fándly
