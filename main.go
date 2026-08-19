@@ -40,6 +40,8 @@ func main() {
 	r.Get("/ping", app.Ping)
 	r.Post("/label/{endpoint}/render", app.Render)
 	r.Post("/label/{endpoint}/print", app.Print)
+	r.Get("/label/{endpoint}/gui", app.LabelGUI)
+	r.Post("/label/{endpoint}/gui", app.LabelGUI)
 
 	log.Printf("Start listening on %s", *listenAddr)
 	if err := http.ListenAndServe(*listenAddr, r); err != nil {

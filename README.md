@@ -47,6 +47,14 @@ Prints 1 label on the printer assigned to the endpoint.
 
 The request body is parsed as JSON using the `args` mapping from the configuration.
 
+##### `GET /label/{endpoint}/gui`
+
+Displays a simple HTML form for printing labels for the given endpoint.
+
+##### `POST /label/{endpoint}/gui`
+
+Prints 1 label using the submitted HTML form values. The form fields use the configured template variable names from `args`.
+
 
 
 ### Configuration

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/url"
 	"strings"
 
 	"github.com/tidwall/gjson"
@@ -39,6 +40,16 @@ func (e *Endpoint) GetArgsFromJson(json string) map[string]string {
 
 	for key := range e.Args {
 		result[key] = gjson.Get(json, e.Args[key]).String()
+	}
+
+	return result
+}
+
+func (e *Endpoint) GetArgsFromForm(form url.Values) map[string]string {
+	result := make(map[string]string)
+
+	for key := range e.Args {
+		result[key] = form.Get(key)
 	}
 
 	return result
