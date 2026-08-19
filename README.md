@@ -5,7 +5,7 @@ REST API written in Go to print using a label printer with TSPL support
 
 ### Installing
 
-You can either download a binary from the [latest release](https://github.com/gergof/tspl-print-api/releases/latest) or use the [gergof/tspl-print-api](...) docker image.
+You can either download a binary from the [latest release](https://github.com/gergof/tspl-print-api/releases/latest) or use the `gergof/tspl-print-api` or `ghcr.io/gergof/tspl-print-api` docker image.
 
 When installing with docker you have to pass the required device to the container. For example: `docker run --device /dev/usb/lp0 gergof/tspl-print-api`.
 
