@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## 1.4.0 - 2026-08-19
+#### Build / CI
+- Switched to github actions for building - (6d85c9f) - Gergő Fándly
+#### Features
+- **(gui)** Added GUI for printing labels - (818c03c) - Gergő Fándly
+
+- - -
+
 ## 1.3.2 - 2025-05-20
 #### Bug Fixes
 - **(printer)** Don't cause 500 errors when syncing fails on unsupported drivers - (21c726d) - Fándly Gergő
