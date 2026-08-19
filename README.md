@@ -151,3 +151,14 @@ The config file in `dev/config.yml` also contains an example configuration for p
   - `width` - The width of the datamatrix code
   - `height` - The height of the datamatrix code
   - `content` - The content to print (can use templating)
+- `line` - Draw a horizontal or vertical line
+  - `x` - Horizontal starting coordinate (in dots)
+  - `y` - Vertical starting coordinate (in dots)
+  - `width` - The width of the line (in dots)
+  - `height` - The height of the line (in dots)
+- `box` - Draw a square or rectangular box
+  - `x` - Horizontal starting coordinate (in dots)
+  - `y` - Vertical starting coordinate (in dots)
+  - `width` - The width of the box (in dots)
+  - `height` - The height of the box (in dots)
+  - `thickness` - The line thickness of the box (defaults to 1)

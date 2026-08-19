@@ -59,6 +59,18 @@ func (w *CodeWrapper) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			return err
 		}
 		w.Code = &datamatrix
+	case "line":
+		var line CodeLine
+		if err := unmarshal(&line); err != nil {
+			return err
+		}
+		w.Code = &line
+	case "box":
+		var box CodeBox
+		if err := unmarshal(&box); err != nil {
+			return err
+		}
+		w.Code = &box
 	default:
 		return fmt.Errorf("unknown code type: %s", base.Type)
 	}

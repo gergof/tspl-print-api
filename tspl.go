@@ -60,3 +60,11 @@ func TsplBlockCommand(x int, y int, width int, height int, font string, rotation
 func TsplDatamatrixCommand(x int, y int, width int, height int, content string) string {
 	return fmt.Sprintf("DMATRIX %d,%d,%d,%d,\"%s\"", x, y, width, height, escapeContent(content))
 }
+
+func TsplLineCommand(x int, y int, width int, height int) string {
+	return fmt.Sprintf("BAR %d,%d,%d,%d", x, y, width, height)
+}
+
+func TsplBoxCommand(x int, y int, width int, height int, thickness int) string {
+	return fmt.Sprintf("BOX %d,%d,%d,%d,%d", x, y, x+width, y+height, thickness)
+}
