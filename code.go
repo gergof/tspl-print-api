@@ -12,6 +12,15 @@ type CodeBase struct {
 	Type string `yaml:"type"`
 }
 
+func normalizeRotation(rotation int) int {
+	switch rotation {
+	case 0, 90, 180, 270:
+		return rotation
+	default:
+		return 0
+	}
+}
+
 type CodeWrapper struct {
 	Code
 }

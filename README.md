@@ -118,6 +118,7 @@ The config file in `dev/config.yml` also contains an example configuration for p
   - `x` - Horizontal starting coordinate (in dots)
   - `y` - Vertical starting coordinate (in dots)
   - `font` - Font to use
+  - `rotation` - Rotation angle (valid values: `0`, `90`, `180`, `270`, defaults to `0`)
   - `align` - Text alignment (valid values: `default`, `left`, `right`, `center`)
   - `content` - The content to print (can use templating)
 - `barcode` - Print 1D barcodes
@@ -126,6 +127,7 @@ The config file in `dev/config.yml` also contains an example configuration for p
   - `height` - Height of barcode
   - `codeType` - Type of barcode
   - `humanReadable` - Position of human readable label (valid values: `none`, `left`, `center`, `right`)
+  - `rotation` - Rotation angle (valid values: `0`, `90`, `180`, `270`, defaults to `0`)
   - `align` - Alignment of barcode
   - `content` - The content to print (can use templating)
 - `pdf417` - Print PDF-417 2D codes
@@ -133,12 +135,14 @@ The config file in `dev/config.yml` also contains an example configuration for p
   - `y` - Vertical starting coordinate (in dots)
   - `width` - The width of the barcode
   - `height` - The height of the barcode
+  - `rotation` - Rotation angle (valid values: `0`, `90`, `180`, `270`, defaults to `0`)
   - `content` - The content to print (can use templating)
 - `qr` - Print QR code
   - `x` - Horizontal starting coordinate (in dots)
   - `y` - Vertical starting coordinate (in dots)
   - `ecc` - ECC level to use for code (valid values: `L`, `M`, `Q`, `H`)
   - `cellWidth` - Width of a cell (valid values from 0 to 10)
+  - `rotation` - Rotation angle (valid values: `0`, `90`, `180`, `270`, defaults to `0`)
   - `content` - The content to print (can use templating)
 - `block` - Print text wrapped in a box
   - `x` - Horizontal starting coordinate (in dots)
@@ -147,6 +151,7 @@ The config file in `dev/config.yml` also contains an example configuration for p
   - `height` - The height of the text block
   - `font` - Font to use
   - `space` - Space between the lines (default to 0)
+  - `rotation` - Rotation angle (valid values: `0`, `90`, `180`, `270`, defaults to `0`)
   - `align` - Text alignment (valid values: `default`, `left`, `right`, `center`)
   - `content` - The content to print (can use templating)
 - `datamatrix` - Print datamatrix code

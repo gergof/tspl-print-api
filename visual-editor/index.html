@@ -327,8 +327,8 @@
         { name: "Id", path: "product.id" }
       ],
       elements: [
-        { id: uid(), type: "text", x: 20, y: 20, font: "3", align: "default", content: "{{ .ProductName }}" },
-        { id: uid(), type: "qr", x: 20, y: 60, ecc: "L", cellWidth: 5, content: "{{ .Id }}" },
+        { id: uid(), type: "text", x: 20, y: 20, font: "3", rotation: 0, align: "default", content: "{{ .ProductName }}" },
+        { id: uid(), type: "qr", x: 20, y: 60, ecc: "L", cellWidth: 5, rotation: 0, content: "{{ .Id }}" },
         { id: uid(), type: "box", x: 10, y: 10, width: 360, height: 220, thickness: 2 }
       ]
     };
@@ -411,11 +411,11 @@
       let element;
 
       if (type === "text") {
-        element = { ...base, font: "2", align: "default", content: "{{ .ProductName }}" };
+        element = { ...base, font: "2", rotation: 0, align: "default", content: "{{ .ProductName }}" };
       } else if (type === "barcode") {
-        element = { ...base, height: 80, codeType: "128", humanReadable: "center", align: "default", content: "{{ .Id }}" };
+        element = { ...base, height: 80, codeType: "128", humanReadable: "center", rotation: 0, align: "default", content: "{{ .Id }}" };
       } else if (type === "qr") {
-        element = { ...base, ecc: "L", cellWidth: 5, content: "{{ .Id }}" };
+        element = { ...base, ecc: "L", cellWidth: 5, rotation: 0, content: "{{ .Id }}" };
       } else if (type === "line") {
         element = { ...base, width: 160, height: 2 };
       } else {
@@ -506,10 +506,14 @@
       preview.append(background);
 
       state.elements.forEach((element) => {
-        const group = svgEl("g", {
+        const groupAttrs = {
           class: `label-item${element.id === state.selectedId ? " selected" : ""}`,
           "data-id": element.id
-        });
+        };
+        const transform = rotationTransform(element);
+        if (transform) groupAttrs.transform = transform;
+
+        const group = svgEl("g", groupAttrs);
         group.addEventListener("pointerdown", (event) => startDrag(event, element.id));
 
         renderElementSvg(group, element);
@@ -660,6 +664,7 @@
       if (element.type === "text") {
         elementForm.append(
           inputControl("Font", element.font, (value) => updateElement(element, "font", value)),
+          rotationControl(element),
           selectControl("Align", element.align, ["default", "left", "center", "right"], (value) => updateElement(element, "align", value)),
           textareaControl("Content", element.content, (value) => updateElement(element, "content", value))
         );
@@ -668,6 +673,7 @@
           numberControl("Height", element.height, (value) => updateElement(element, "height", value)),
           inputControl("Code type", element.codeType, (value) => updateElement(element, "codeType", value)),
           selectControl("Human readable", element.humanReadable, ["none", "left", "center", "right"], (value) => updateElement(element, "humanReadable", value)),
+          rotationControl(element),
           selectControl("Align", element.align, ["default", "left", "center", "right"], (value) => updateElement(element, "align", value)),
           textareaControl("Content", element.content, (value) => updateElement(element, "content", value))
         );
@@ -675,6 +681,7 @@
         elementForm.append(
           selectControl("ECC", element.ecc, ["L", "M", "Q", "H"], (value) => updateElement(element, "ecc", value)),
           numberControl("Cell width", element.cellWidth, (value) => updateElement(element, "cellWidth", value)),
+          rotationControl(element),
           textareaControl("Content", element.content, (value) => updateElement(element, "content", value))
         );
       } else if (element.type === "line") {
@@ -756,6 +763,17 @@
       if (align === "center") return x - width / 2;
       if (align === "right") return x - width;
       return x;
+    }
+
+    function rotationTransform(element) {
+      if (!supportsRotation(element.type)) return "";
+
+      const rotation = normalizeRotation(element.rotation);
+      return rotation === 0 ? "" : `rotate(${rotation} ${element.x} ${element.y})`;
+    }
+
+    function supportsRotation(type) {
+      return ["text", "barcode", "qr"].includes(type);
     }
 
     function svgTextAnchor(align) {
@@ -935,17 +953,20 @@
 
       if (type === "text") {
         element.font = String(raw.font || "1");
+        element.rotation = normalizeRotation(raw.rotation);
         element.align = String(raw.align || "default");
         element.content = String(raw.content || "");
       } else if (type === "barcode") {
         element.height = asInt(raw.height);
         element.codeType = String(raw.codeType || "128");
         element.humanReadable = String(raw.humanReadable || "none");
+        element.rotation = normalizeRotation(raw.rotation);
         element.align = String(raw.align || "default");
         element.content = String(raw.content || "");
       } else if (type === "qr") {
         element.ecc = String(raw.ecc || "L");
         element.cellWidth = asInt(raw.cellWidth || 5);
+        element.rotation = normalizeRotation(raw.rotation);
         element.content = String(raw.content || "");
       } else if (type === "line") {
         element.width = asInt(raw.width);
@@ -1046,17 +1067,20 @@
 
       if (element.type === "text") {
         lines.push(`        font: ${yamlScalar(element.font)}`);
+        lines.push(`        rotation: ${normalizeRotation(element.rotation)}`);
         lines.push(`        align: ${yamlScalar(element.align)}`);
         lines.push(`        content: ${yamlScalar(element.content)}`);
       } else if (element.type === "barcode") {
         lines.push(`        height: ${asInt(element.height)}`);
         lines.push(`        codeType: ${yamlScalar(element.codeType)}`);
         lines.push(`        humanReadable: ${yamlScalar(element.humanReadable)}`);
+        lines.push(`        rotation: ${normalizeRotation(element.rotation)}`);
         lines.push(`        align: ${yamlScalar(element.align)}`);
         lines.push(`        content: ${yamlScalar(element.content)}`);
       } else if (element.type === "qr") {
         lines.push(`        ecc: ${yamlScalar(element.ecc)}`);
         lines.push(`        cellWidth: ${asInt(element.cellWidth)}`);
+        lines.push(`        rotation: ${normalizeRotation(element.rotation)}`);
         lines.push(`        content: ${yamlScalar(element.content)}`);
       } else if (element.type === "line") {
         lines.push(`        width: ${asInt(element.width)}`);
@@ -1087,6 +1111,11 @@
     function asInt(value) {
       const number = Number(value);
       return Number.isFinite(number) ? Math.round(number) : 0;
+    }
+
+    function normalizeRotation(value) {
+      const rotation = asInt(value);
+      return [0, 90, 180, 270].includes(rotation) ? rotation : 0;
     }
 
     async function copyYaml() {
@@ -1158,6 +1187,12 @@
       select.addEventListener("change", () => onChange(select.value));
       wrap.append(select);
       return wrap;
+    }
+
+    function rotationControl(element) {
+      return selectControl("Rotation", String(normalizeRotation(element.rotation)), ["0", "90", "180", "270"], (value) => {
+        updateElement(element, "rotation", normalizeRotation(value));
+      });
     }
 
     function readonlyControl(labelText, value) {

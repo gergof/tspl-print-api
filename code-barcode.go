@@ -16,6 +16,7 @@ type CodeBarcode struct {
 	Height        int           `yaml:"height"`
 	CodeType      string        `yaml:"codeType"`
 	HumanReadable HumanReadable `yaml:"humanReadable"`
+	Rotation      int           `yaml:"rotation"`
 	Align         TextAlign     `yaml:"align"`
 	Content       string        `yaml:"content"`
 }
@@ -54,5 +55,5 @@ func (c *CodeBarcode) ToCommand(args map[string]string) (string, error) {
 		}
 	}
 
-	return TsplBarcodeCommand(c.X, c.Y, c.CodeType, c.Height, humanReadable, 0, 2, 2, alignment, renderedContent), nil
+	return TsplBarcodeCommand(c.X, c.Y, c.CodeType, c.Height, humanReadable, normalizeRotation(c.Rotation), 2, 2, alignment, renderedContent), nil
 }

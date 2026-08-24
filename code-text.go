@@ -11,11 +11,12 @@ const (
 
 type CodeText struct {
 	CodeBase
-	X       int       `yaml:"x"`
-	Y       int       `yaml:"y"`
-	Font    string    `yaml:"font"`
-	Align   TextAlign `yaml:"align"`
-	Content string    `yaml:"content"`
+	X        int       `yaml:"x"`
+	Y        int       `yaml:"y"`
+	Font     string    `yaml:"font"`
+	Rotation int       `yaml:"rotation"`
+	Align    TextAlign `yaml:"align"`
+	Content  string    `yaml:"content"`
 }
 
 func (c *CodeText) ToCommand(args map[string]string) (string, error) {
@@ -43,5 +44,5 @@ func (c *CodeText) ToCommand(args map[string]string) (string, error) {
 		}
 	}
 
-	return TsplTextCommand(c.X, c.Y, font, 0, 1, 1, alignment, renderedContent), nil
+	return TsplTextCommand(c.X, c.Y, font, normalizeRotation(c.Rotation), 1, 1, alignment, renderedContent), nil
 }
