@@ -6,9 +6,12 @@ import (
 	"net/http"
 	"net/url"
 	"sort"
+	"unicode/utf8"
 
 	"github.com/go-chi/chi/v5"
 )
+
+const maxEndpointNameLength = 20
 
 type labelGUIField struct {
 	Name  string
@@ -26,7 +29,79 @@ var labelGUITemplate = template.Must(template.New("label-gui").Parse(`<!doctype 
 <html lang="en">
 <head>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Print {{ .Endpoint }}</title>
+	<style>
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			max-width: 560px;
+			margin: 0 auto;
+			padding: 24px 16px;
+			color: #202124;
+			background: #f8f9fa;
+			font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+			line-height: 1.35;
+		}
+
+		h1 {
+			margin: 0 0 20px;
+			overflow-wrap: anywhere;
+			font-size: 24px;
+			font-weight: 600;
+		}
+
+		p {
+			margin: 0 0 14px;
+		}
+
+		label {
+			display: block;
+			margin-bottom: 4px;
+			font-size: 13px;
+			font-weight: 600;
+		}
+
+		input,
+		button {
+			font: inherit;
+		}
+
+		input {
+			width: 100%;
+			min-height: 38px;
+			padding: 6px 10px;
+			border: 1px solid #b8c0cc;
+			border-radius: 4px;
+			background: #fff;
+		}
+
+		button {
+			min-height: 38px;
+			padding: 6px 14px;
+			border: 1px solid #2f6feb;
+			border-radius: 4px;
+			color: #fff;
+			background: #1a73e8;
+			cursor: pointer;
+		}
+
+		@media (max-width: 420px) {
+			body {
+				padding: 16px 12px;
+			}
+
+			h1 {
+				font-size: 20px;
+			}
+
+			button {
+				width: 100%;
+			}
+		}
+	</style>
 </head>
 <body>
 	<h1>Print {{ .Endpoint }}</h1>
@@ -55,7 +130,7 @@ func (a *App) LabelGUI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := labelGUIData{
-		Endpoint: endpointName,
+		Endpoint: truncateEndpointName(endpointName),
 		Fields:   endpointGUIFields(endpoint, nil),
 	}
 
@@ -111,4 +186,13 @@ func endpointGUIFields(endpoint Endpoint, values url.Values) []labelGUIField {
 	}
 
 	return fields
+}
+
+func truncateEndpointName(name string) string {
+	if utf8.RuneCountInString(name) <= maxEndpointNameLength {
+		return name
+	}
+
+	runes := []rune(name)
+	return string(runes[:maxEndpointNameLength])
 }
