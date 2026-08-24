@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## 1.6.0 - 2026-08-24
+#### Features
+- Added rotation parameter - (ba719b5) - Gergő Fándly
+#### Improvements
+- **(gui)** Made the printing GUI responsive - (e22a5ab) - Gergő Fándly
+
+- - -
+
 ## 1.5.0 - 2026-08-19
 #### Features
 - Added commands for drawing lines and boxes - (5ebffdd) - Gergő Fándly
