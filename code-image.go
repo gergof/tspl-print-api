@@ -87,6 +87,13 @@ func imageToMonochromeBitmap(source image.Image) ([]byte, int, int) {
 	height := bounds.Dy()
 	bytesPerRow := (width + 7) / 8
 	bitmap := make([]byte, bytesPerRow*height)
+	grayscale := make([]float64, width*height)
+
+	// The printer represents white pixels with set bits. Starting with an all
+	// white bitmap also ensures unused padding bits do not print.
+	for i := range bitmap {
+		bitmap[i] = 0xff
+	}
 
 	for y := 0; y < height; y++ {
 		for x := 0; x < width; x++ {
@@ -95,8 +102,37 @@ func imageToMonochromeBitmap(source image.Image) ([]byte, int, int) {
 			// RGBA returns alpha-premultiplied channels. Composite transparent
 			// pixels over white before calculating perceived luminance.
 			luminance := (299*r+587*g+114*b)/1000 + (0xffff - a)
-			if luminance < 0x8000 {
-				bitmap[y*bytesPerRow+x/8] |= 1 << (7 - uint(x%8))
+			grayscale[y*width+x] = float64(luminance) / 257
+		}
+	}
+
+	// Floyd-Steinberg error diffusion preserves the appearance of gray tones
+	// on a printer that can only place black dots or leave white space.
+	for y := 0; y < height; y++ {
+		for x := 0; x < width; x++ {
+			index := y*width + x
+			oldPixel := grayscale[index]
+			newPixel := 0.0
+			if oldPixel >= 128 {
+				newPixel = 255
+			}
+
+			if newPixel == 0 {
+				bitmap[y*bytesPerRow+x/8] &^= 1 << (7 - uint(x%8))
+			}
+
+			error := oldPixel - newPixel
+			if x+1 < width {
+				grayscale[index+1] += error * 7 / 16
+			}
+			if y+1 < height {
+				if x > 0 {
+					grayscale[index+width-1] += error * 3 / 16
+				}
+				grayscale[index+width] += error * 5 / 16
+				if x+1 < width {
+					grayscale[index+width+1] += error / 16
+				}
 			}
 		}
 	}

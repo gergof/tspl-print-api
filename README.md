@@ -175,3 +175,5 @@ The config file in `dev/config.yml` also contains an example configuration for p
   - `x` - Horizontal starting coordinate (in dots)
   - `y` - Vertical starting coordinate (in dots)
   - `content` - The base64 data URL (can use templating)
+
+Images are printed at their native pixel size. Transparent pixels are treated as white, and gray tones are converted to printable black-and-white dot patterns using Floyd-Steinberg dithering.
