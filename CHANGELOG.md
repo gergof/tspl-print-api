@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## 1.7.0 - 2026-09-30
+#### Features
+- Added bitmap parameter - (67069bd) - Gergő Fándly
+
+- - -
+
 ## 1.6.0 - 2026-08-24
 #### Features
 - Added rotation parameter - (ba719b5) - Gergő Fándly
