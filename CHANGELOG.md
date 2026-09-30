@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## 1.7.1 - 2026-09-30
+#### Bug Fixes
+- **(code-image)** Allow printing grays and fixed inverted colors - (c0f7886) - Gergő Fándly
+
+- - -
+
 ## 1.7.0 - 2026-09-30
 #### Features
 - Added bitmap parameter - (67069bd) - Gergő Fándly
