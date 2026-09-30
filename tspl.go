@@ -68,3 +68,7 @@ func TsplLineCommand(x int, y int, width int, height int) string {
 func TsplBoxCommand(x int, y int, width int, height int, thickness int) string {
 	return fmt.Sprintf("BOX %d,%d,%d,%d,%d", x, y, x+width, y+height, thickness)
 }
+
+func TsplBitmapCommand(x int, y int, width int, height int, mode int, bitmap []byte) string {
+	return fmt.Sprintf("BITMAP %d,%d,%d,%d,%d,", x, y, width, height, mode) + string(bitmap)
+}

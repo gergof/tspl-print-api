@@ -171,3 +171,7 @@ The config file in `dev/config.yml` also contains an example configuration for p
   - `width` - The width of the box (in dots)
   - `height` - The height of the box (in dots)
   - `thickness` - The line thickness of the box (defaults to 1)
+- `image` - Print a base64 data URL as a monochrome bitmap (PNG, JPEG, and GIF are supported)
+  - `x` - Horizontal starting coordinate (in dots)
+  - `y` - Vertical starting coordinate (in dots)
+  - `content` - The base64 data URL (can use templating)

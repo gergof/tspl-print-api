@@ -80,6 +80,12 @@ func (w *CodeWrapper) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			return err
 		}
 		w.Code = &box
+	case "image":
+		var image CodeImage
+		if err := unmarshal(&image); err != nil {
+			return err
+		}
+		w.Code = &image
 	default:
 		return fmt.Errorf("unknown code type: %s", base.Type)
 	}
